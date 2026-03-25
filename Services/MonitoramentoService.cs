@@ -1,0 +1,35 @@
+using PsnPriceTracker.Interfaces;
+using PsnPriceTracker.Models;
+
+namespace PsnPriceTracker.Services
+{
+    public class MonitoramentoService : IMonitoramentoService
+    {
+        private readonly IPsnIntegrationService _psnService;
+        private readonly ITelegramIntegrationService _telegramService;
+
+        public MonitoramentoService(IPsnIntegrationService psnService, ITelegramIntegrationService telegramService)
+        {
+            _psnService = psnService;
+            _telegramService = telegramService;
+        }
+
+        public async Task<string> ProcessarAlertaAsync(AlertaRequestDTO request)
+        {
+            //get price on PSN using the provided URL
+            var dadosPsn = await _psnService.ObterPrecoAtualAsync(request.UrlDoJogo);
+
+            //compare the current price with the target price provided by the user
+            if (dadosPsn.PrecoAtual <= request.PrecoAlvo)
+            {
+                //formats the message and sends it to the Telegram service
+                string mensagem = $"Alerta! O jogo {dadosPsn.NomeDoJogo} baixou para R$ {dadosPsn.PrecoAtual}!";
+                await _telegramService.EnviarMensagemAsync(mensagem);
+
+                return "Preço atingido! Notificação enviada.";
+            }
+
+            return $"O preço atual (R$ {dadosPsn.PrecoAtual}) ainda está acima do seu alvo.";
+        }
+    }
+}
