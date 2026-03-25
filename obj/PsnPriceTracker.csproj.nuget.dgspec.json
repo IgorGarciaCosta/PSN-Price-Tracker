@@ -53,6 +53,14 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.9, )"
+            },
+            "Scalar.AspNetCore": {
+              "target": "Package",
+              "version": "[2.13.15, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerUI": {
+              "target": "Package",
+              "version": "[10.1.7, )"
             }
           },
           "imports": [

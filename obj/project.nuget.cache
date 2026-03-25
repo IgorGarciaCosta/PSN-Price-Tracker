@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "U1bIvbpUzEk=",
+  "dgSpecHash": "fuceXFV6HMU=",
   "success": true,
   "projectFilePath": "C:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.9\\microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512",
-    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\scalar.aspnetcore\\2.13.15\\scalar.aspnetcore.2.13.15.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\10.1.7\\swashbuckle.aspnetcore.swaggerui.10.1.7.nupkg.sha512"
   ],
   "logs": []
 }

@@ -1,0 +1,91 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "PsnPriceTracker/1.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.OpenApi": "9.0.9",
+          "Scalar.AspNetCore": "2.13.15",
+          "Swashbuckle.AspNetCore.SwaggerUI": "10.1.7"
+        },
+        "runtime": {
+          "PsnPriceTracker.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.OpenApi/9.0.9": {
+        "dependencies": {
+          "Microsoft.OpenApi": "1.6.17"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll": {
+            "assemblyVersion": "9.0.9.0",
+            "fileVersion": "9.0.925.42003"
+          }
+        }
+      },
+      "Microsoft.OpenApi/1.6.17": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.OpenApi.dll": {
+            "assemblyVersion": "1.6.17.0",
+            "fileVersion": "1.6.17.0"
+          }
+        }
+      },
+      "Scalar.AspNetCore/2.13.15": {
+        "runtime": {
+          "lib/net9.0/Scalar.AspNetCore.dll": {
+            "assemblyVersion": "2.13.15.0",
+            "fileVersion": "2.13.15.0"
+          }
+        }
+      },
+      "Swashbuckle.AspNetCore.SwaggerUI/10.1.7": {
+        "runtime": {
+          "lib/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll": {
+            "assemblyVersion": "10.1.7.0",
+            "fileVersion": "10.1.7.2427"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "PsnPriceTracker/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.AspNetCore.OpenApi/9.0.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3Sina0gS/CTYt9XG6DUFPdXOmJui7e551U0kO2bIiDk3vZ2sctxxenN+cE1a5CrUpjIVZfZr32neWYYRO+Piaw==",
+      "path": "microsoft.aspnetcore.openapi/9.0.9",
+      "hashPath": "microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512"
+    },
+    "Microsoft.OpenApi/1.6.17": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Le+kehlmrlQfuDFUt1zZ2dVwrhFQtKREdKBo+rexOwaCoYP0/qpgT9tLxCsZjsgR5Itk1UKPcbgO+FyaNid/bA==",
+      "path": "microsoft.openapi/1.6.17",
+      "hashPath": "microsoft.openapi.1.6.17.nupkg.sha512"
+    },
+    "Scalar.AspNetCore/2.13.15": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ufSBk0vdDnrhn+YLGElUdegUkM+hb7xUoySH+oaZrNHi2fAm+oeSCr60Lqmm4OeLBhPKd2htr/DANOvjuNT6rg==",
+      "path": "scalar.aspnetcore/2.13.15",
+      "hashPath": "scalar.aspnetcore.2.13.15.nupkg.sha512"
+    },
+    "Swashbuckle.AspNetCore.SwaggerUI/10.1.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iJo3ODyUb/M8Vm8AH1r9y9iAba0w95xsCn3zFVl96ISRHbTDWxi+l7oFVCZqUEdjd97B8VMDPnMliWAdomR8uw==",
+      "path": "swashbuckle.aspnetcore.swaggerui/10.1.7",
+      "hashPath": "swashbuckle.aspnetcore.swaggerui.10.1.7.nupkg.sha512"
+    }
+  }
+}

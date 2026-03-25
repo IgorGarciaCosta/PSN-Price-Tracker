@@ -2,6 +2,7 @@ using PsnPriceTracker.Integrations;
 using PsnPriceTracker.Interfaces;
 using PsnPriceTracker.Services;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,6 +18,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "PSN Price Tracker");
+    });
 }
 
 app.UseHttpsRedirection();
