@@ -1,0 +1,6 @@
+@PsnPriceTracker_HostAddress = http://localhost:5023
+
+GET {{PsnPriceTracker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
