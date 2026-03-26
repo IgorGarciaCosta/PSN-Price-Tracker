@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-builder.Services.AddScoped<IPsnIntegrationService, PsnIntegrationService>();
+builder.Services.AddHttpClient<IPsnIntegrationService, PsnIntegrationService>();
 builder.Services.AddScoped<ITelegramIntegrationService, TelegramIntegrationService>();
 builder.Services.AddScoped<IMonitoramentoService, MonitoramentoService>();
 var app = builder.Build();

@@ -33,3 +33,4 @@ C:\Users\ISILV125\Documents\GitHub\PSN-Price-Tracker\obj\Debug\net9.0\PsnPriceTr
 C:\Users\ISILV125\Documents\GitHub\PSN-Price-Tracker\obj\Debug\net9.0\ref\PsnPriceTracker.dll
 C:\Users\ISILV125\Documents\GitHub\PSN-Price-Tracker\bin\Debug\net9.0\Scalar.AspNetCore.dll
 C:\Users\ISILV125\Documents\GitHub\PSN-Price-Tracker\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\ISILV125\Documents\GitHub\PSN-Price-Tracker\bin\Debug\net9.0\HtmlAgilityPack.dll

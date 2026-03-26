@@ -8,12 +8,21 @@
     ".NETCoreApp,Version=v9.0": {
       "PsnPriceTracker/1.0.0": {
         "dependencies": {
+          "HtmlAgilityPack": "1.12.4",
           "Microsoft.AspNetCore.OpenApi": "9.0.9",
           "Scalar.AspNetCore": "2.13.15",
           "Swashbuckle.AspNetCore.SwaggerUI": "10.1.7"
         },
         "runtime": {
           "PsnPriceTracker.dll": {}
+        }
+      },
+      "HtmlAgilityPack/1.12.4": {
+        "runtime": {
+          "lib/net7.0/HtmlAgilityPack.dll": {
+            "assemblyVersion": "1.12.4.0",
+            "fileVersion": "1.12.4.0"
+          }
         }
       },
       "Microsoft.AspNetCore.OpenApi/9.0.9": {
@@ -58,6 +67,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "HtmlAgilityPack/1.12.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ljqvBabvFwKoLniuoQKO8b5bJfJweKLs4fUNS/V5dsvpo0A8MlJqxxn9XVmP2DaskbUXty6IYaWAi1SArGIMeQ==",
+      "path": "htmlagilitypack/1.12.4",
+      "hashPath": "htmlagilitypack.1.12.4.nupkg.sha512"
     },
     "Microsoft.AspNetCore.OpenApi/9.0.9": {
       "type": "package",

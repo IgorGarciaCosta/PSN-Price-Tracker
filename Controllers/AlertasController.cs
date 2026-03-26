@@ -15,6 +15,19 @@ namespace PsnPriceTracker.Controllers
             _monitoramentoService = monitoramentoService;
         }
 
+        [HttpGet("jogos-mock")]
+        public IActionResult ObterJogosMock()
+        {
+            var jogos = new List<PrecoPsnDTO>
+            {
+                new PrecoPsnDTO { NomeDoJogo = "God of War Ragnarök", PrecoAtual = 149.90m },
+                new PrecoPsnDTO { NomeDoJogo = "Spider-Man 2", PrecoAtual = 199.90m },
+                new PrecoPsnDTO { NomeDoJogo = "The Last of Us Part II", PrecoAtual = 99.90m }
+            };
+
+            return Ok(jogos);
+        }
+
         [HttpPost("testar")]
         public async Task<IActionResult> TestarAlerta([FromBody] AlertaRequestDTO request)
         {
