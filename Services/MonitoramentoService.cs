@@ -17,7 +17,7 @@ namespace PsnPriceTracker.Services
         public async Task<string> ProcessarAlertaAsync(AlertaRequestDTO request)
         {
             //get price on PSN using the provided URL
-            var dadosPsn = await _psnService.ObterPrecoAtualAsync(request.UrlDoJogo);
+            var dadosPsn = await _psnService.GetCurrentPriceAsync(request.UrlDoJogo);
 
             //compare the current price with the target price provided by the user
             if (dadosPsn.PrecoAtual <= request.PrecoAlvo)
