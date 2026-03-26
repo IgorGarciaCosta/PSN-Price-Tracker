@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PsnPriceTracker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+65203c34cc278bf9db9a062d4a10bd8e4b3e22cc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a704d108b6ecedaa3a4676fe01cfcd292a5f073")]
 [assembly: System.Reflection.AssemblyProductAttribute("PsnPriceTracker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PsnPriceTracker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
