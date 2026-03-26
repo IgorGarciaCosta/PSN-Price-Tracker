@@ -2,6 +2,9 @@ namespace PsnPriceTracker.Interfaces
 {
     public interface ITelegramIntegrationService
     {
-        Task EnviarMensagemAsync(string mensagem);
+        /// <summary>
+        /// Sends a text message to the configured Telegram chat using the Bot API.
+        /// </summary>
+        Task SendMessageAsync(string message);
     }
 }

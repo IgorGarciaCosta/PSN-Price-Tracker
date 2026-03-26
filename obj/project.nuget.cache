@@ -1,14 +1,31 @@
 {
   "version": 2,
-  "dgSpecHash": "bC11pbm/mMw=",
+  "dgSpecHash": "x4dxQH+VPis=",
   "success": true,
   "projectFilePath": "C:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ISILV125\\.nuget\\packages\\htmlagilitypack\\1.12.4\\htmlagilitypack.1.12.4.nupkg.sha512",
     "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.9\\microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.configuration\\10.0.5\\microsoft.extensions.configuration.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.5\\microsoft.extensions.configuration.abstractions.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.configuration.binder\\10.0.5\\microsoft.extensions.configuration.binder.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\10.0.5\\microsoft.extensions.dependencyinjection.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.5\\microsoft.extensions.dependencyinjection.abstractions.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.diagnostics\\10.0.5\\microsoft.extensions.diagnostics.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.diagnostics.abstractions\\10.0.5\\microsoft.extensions.diagnostics.abstractions.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.http\\10.0.5\\microsoft.extensions.http.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.http.polly\\10.0.5\\microsoft.extensions.http.polly.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.logging\\10.0.5\\microsoft.extensions.logging.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\10.0.5\\microsoft.extensions.logging.abstractions.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.options\\10.0.5\\microsoft.extensions.options.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\10.0.5\\microsoft.extensions.options.configurationextensions.10.0.5.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.5\\microsoft.extensions.primitives.10.0.5.nupkg.sha512",
     "C:\\Users\\ISILV125\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\polly\\7.2.4\\polly.7.2.4.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\polly.extensions.http\\3.0.0\\polly.extensions.http.3.0.0.nupkg.sha512",
     "C:\\Users\\ISILV125\\.nuget\\packages\\scalar.aspnetcore\\2.13.15\\scalar.aspnetcore.2.13.15.nupkg.sha512",
-    "C:\\Users\\ISILV125\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\10.1.7\\swashbuckle.aspnetcore.swaggerui.10.1.7.nupkg.sha512"
+    "C:\\Users\\ISILV125\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\10.1.7\\swashbuckle.aspnetcore.swaggerui.10.1.7.nupkg.sha512",
+    "C:\\Users\\ISILV125\\.nuget\\packages\\system.diagnostics.diagnosticsource\\10.0.5\\system.diagnostics.diagnosticsource.10.0.5.nupkg.sha512"
   ],
   "logs": []
 }
