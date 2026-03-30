@@ -1,51 +1,74 @@
-using PsnPriceTracker.Integrations;
-using PsnPriceTracker.Interfaces;
-using PsnPriceTracker.Services;
+using Microsoft.OpenApi.Models;
 using Polly;
 using Polly.Extensions.Http;
-
+using PsnPriceTracker.Integrations;
+using PsnPriceTracker.Interfaces;
+using PsnPriceTracker.Middleware;
+using PsnPriceTracker.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
 
+// 1. CONFIGURAÇÃO DO SWAGGER (Com o Cadeado visual)
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "PSN Price Tracker", Version = "v1" });
 
-// --- INÍCIO DA CONFIGURAÇÃO DO POLLY ---
-// Define a política: Se der erro de rede ou erro 5xx, tenta 3 vezes.
-// O tempo de espera aumenta exponencialmente: 2s, 4s, 8s...
+    c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+    {
+        Description = "Insira a sua API Key no campo abaixo.",
+        Name = "X-Api-Key",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "ApiKeyScheme"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "ApiKey" }
+            },
+            new string[] {}
+        }
+    });
+});
+
+// 2. CONFIGURAÇÃO DO POLLY E SERVIÇOS
 var retryPolicy = HttpPolicyExtensions
     .HandleTransientHttpError()
     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
     onRetry: (outcome, timespan, retryAttempt, context) =>
     {
-        // Esse log é ótimo para o recrutador ver que o Polly realmente está funcionando
-        Console.WriteLine($"[POLLY AVISO] Falha ao contatar Telegram. Tentativa {retryAttempt} de 3. Esperando {timespan.TotalSeconds}s...");
+        Console.WriteLine($"[POLLY] Falha no Telegram. Tentativa {retryAttempt}. Esperando {timespan.TotalSeconds}s...");
     });
 
-// Registra o serviço do Telegram com o HttpClient e atrela a política do Polly
+builder.Services.AddHttpClient<IPsnIntegrationService, PsnIntegrationService>();
 builder.Services.AddHttpClient<ITelegramIntegrationService, TelegramIntegrationService>()
     .AddPolicyHandler(retryPolicy);
-// --- FIM DA CONFIGURAÇÃO DO POLLY ---
 
-builder.Services.AddHttpClient<IPsnIntegrationService, PsnIntegrationService>();
 builder.Services.AddScoped<IMonitoramentoService, MonitoramentoService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 3. PIPELINE DE REQUISIÇÕES
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.UseSwaggerUI(options =>
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "PSN Price Tracker");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PSN Price Tracker v1");
     });
 }
 
 app.UseHttpsRedirection();
-app.MapControllers();
 
+// O Middleware roda antes dos controllers. Se barrar, nem chega no Controller.
+app.UseApiKeyAuth();
+
+app.MapControllers();
 
 app.Run();
