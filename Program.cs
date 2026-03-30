@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Polly;
 using Polly.Extensions.Http;
+using PsnPriceTracker.Data;
 using PsnPriceTracker.Integrations;
 using PsnPriceTracker.Interfaces;
 using PsnPriceTracker.Middleware;
@@ -37,7 +39,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// 2. CONFIGURAÇÃO DO POLLY E SERVIÇOS
+// 2. BANCO DE DADOS (SQLite)
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// 3. CONFIGURAÇÃO DO POLLY E SERVIÇOS
 var retryPolicy = HttpPolicyExtensions
     .HandleTransientHttpError()
     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
@@ -51,10 +57,19 @@ builder.Services.AddHttpClient<ITelegramIntegrationService, TelegramIntegrationS
     .AddPolicyHandler(retryPolicy);
 
 builder.Services.AddScoped<IMonitoramentoService, MonitoramentoService>();
+builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
+builder.Services.AddHostedService<TelegramBotHostedService>();
 
 var app = builder.Build();
 
-// 3. PIPELINE DE REQUISIÇÕES
+// 4. AUTO-CRIAÇÃO DO BANCO
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
+
+// 5. PIPELINE DE REQUISIÇÕES
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
