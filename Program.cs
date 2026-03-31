@@ -58,7 +58,9 @@ builder.Services.AddHttpClient<ITelegramIntegrationService, TelegramIntegrationS
 
 builder.Services.AddScoped<IMonitoramentoService, MonitoramentoService>();
 builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
+builder.Services.AddScoped<IAlertaService, AlertaService>();
 builder.Services.AddHostedService<TelegramBotHostedService>();
+builder.Services.AddHostedService<AlertaMonitorBackgroundService>();
 
 var app = builder.Build();
 
