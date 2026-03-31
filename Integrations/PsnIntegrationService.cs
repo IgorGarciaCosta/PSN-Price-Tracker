@@ -1,7 +1,8 @@
+using System.Globalization;
+using System.Text.Json;
 using HtmlAgilityPack;
 using PsnPriceTracker.Interfaces;
 using PsnPriceTracker.Models;
-using System.Globalization;
 
 namespace PsnPriceTracker.Integrations
 {
@@ -38,6 +39,67 @@ namespace PsnPriceTracker.Integrations
                 Console.WriteLine($"[SCRAPING ERROR] Failed to process URL: {ex.Message}");
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Searches the PSN Store API by game name and returns up to 5 matching games.
+        /// Uses the internal Chihiro/tumbler API which provides fuzzy matching.
+        /// </summary>
+        public async Task<List<BuscaResultadoDTO>> BuscarJogosPorNomeAsync(string nomeDoJogo)
+        {
+            var query = Uri.EscapeDataString(nomeDoJogo);
+            var searchUrl = $"https://store.playstation.com/store/api/chihiro/00_09_000/tumbler/BR/pt/999/{query}?suggested_size=5&mode=mixed";
+
+            var response = await _httpClient.GetAsync(searchUrl);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            var resultados = new List<BuscaResultadoDTO>();
+
+            if (!doc.RootElement.TryGetProperty("links", out var links))
+                return resultados;
+
+            foreach (var link in links.EnumerateArray())
+            {
+                var topCategory = link.TryGetProperty("top_category", out var cat) ? cat.GetString() : null;
+                if (topCategory != "downloadable_game")
+                    continue;
+
+                var name = link.TryGetProperty("name", out var n) ? n.GetString() : null;
+                var id = link.TryGetProperty("id", out var idProp) ? idProp.GetString() : null;
+
+                if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(id))
+                    continue;
+
+                var platforms = link.TryGetProperty("playable_platform", out var plats)
+                    ? string.Join(", ", plats.EnumerateArray().Select(p => p.GetString()))
+                    : null;
+
+                var imageUrl = link.TryGetProperty("images", out var imgs) && imgs.GetArrayLength() > 0
+                    ? imgs[0].TryGetProperty("url", out var imgUrl) ? imgUrl.GetString() : null
+                    : null;
+
+                var price = link.TryGetProperty("default_sku", out var sku)
+                    && sku.TryGetProperty("display_price", out var dp)
+                    ? dp.GetString()
+                    : null;
+
+                resultados.Add(new BuscaResultadoDTO
+                {
+                    NomeDoJogo = name,
+                    UrlDoJogo = $"https://store.playstation.com/pt-br/product/{id}",
+                    Plataforma = platforms,
+                    ImagemUrl = imageUrl,
+                    PrecoAtual = price
+                });
+
+                if (resultados.Count >= 5)
+                    break;
+            }
+
+            return resultados;
         }
 
         /// <summary>

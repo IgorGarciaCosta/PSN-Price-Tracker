@@ -138,22 +138,30 @@ public class TelegramBotHostedService : BackgroundService
 
     private async Task HandleGerarKeyAsync(string botToken, long chatId, CancellationToken ct)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var apiKeyService = scope.ServiceProvider.GetRequiredService<IApiKeyService>();
-
-        var chave = await apiKeyService.GerarApiKeyAsync(chatId);
-
-        var mensagem = "🔑 *Sua API Key foi gerada com sucesso!*\n\n"
-                     + $"`{chave}`\n\n"
-                     + "📋 *Como usar:*\n"
-                     + "Adicione o seguinte Header em todas as requisições:\n\n"
-                     + "*Header:* `X-Api-Key`\n"
-                     + $"*Valor:* `{chave}`\n\n"
-                     + "🔒 Guarde esta chave com segurança. Ela é única e intransferível.";
+        var chave = await GerarApiKeyViaScopeAsync(chatId);
+        var mensagem = BuildApiKeyMessage(chave);
 
         await SendTelegramMessageAsync(botToken, chatId, mensagem, ct);
 
         _logger.LogInformation("API Key gerada para o chat {ChatId}", chatId);
+    }
+
+    private async Task<string> GerarApiKeyViaScopeAsync(long chatId)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var apiKeyService = scope.ServiceProvider.GetRequiredService<IApiKeyService>();
+        return await apiKeyService.GerarApiKeyAsync(chatId);
+    }
+
+    private static string BuildApiKeyMessage(string chave)
+    {
+        return "🔑 *Sua API Key foi gerada com sucesso!*\n\n"
+             + $"`{chave}`\n\n"
+             + "📋 *Como usar:*\n"
+             + "Adicione o seguinte Header em todas as requisições:\n\n"
+             + "*Header:* `X-Api-Key`\n"
+             + $"*Valor:* `{chave}`\n\n"
+             + "🔒 Guarde esta chave com segurança. Ela é única e intransferível.";
     }
 
     private async Task SendTelegramMessageAsync(string botToken, long chatId, string message, CancellationToken ct)

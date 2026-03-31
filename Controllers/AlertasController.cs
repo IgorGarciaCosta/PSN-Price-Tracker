@@ -9,10 +9,12 @@ namespace PsnPriceTracker.Controllers
     public class AlertasController : ControllerBase
     {
         private readonly IMonitoramentoService _monitoramentoService;
+        private readonly IPsnIntegrationService _psnService;
 
-        public AlertasController(IMonitoramentoService monitoramentoService)
+        public AlertasController(IMonitoramentoService monitoramentoService, IPsnIntegrationService psnService)
         {
             _monitoramentoService = monitoramentoService;
+            _psnService = psnService;
         }
 
         [HttpGet("jogos-mock")]
@@ -35,6 +37,20 @@ namespace PsnPriceTracker.Controllers
             var resultado = await _monitoramentoService.ProcessarAlertaAsync(request);
 
             return Ok(new { Mensagem = resultado });
+        }
+
+        [HttpGet("buscar-jogo")]
+        public async Task<IActionResult> BuscarJogo([FromQuery] string nome)
+        {
+            if (string.IsNullOrWhiteSpace(nome))
+                return BadRequest(new { Mensagem = "O parâmetro 'nome' é obrigatório." });
+
+            var resultados = await _psnService.BuscarJogosPorNomeAsync(nome);
+
+            if (resultados.Count == 0)
+                return NotFound(new { Mensagem = $"Nenhum jogo encontrado para '{nome}'." });
+
+            return Ok(resultados);
         }
     }
 }
