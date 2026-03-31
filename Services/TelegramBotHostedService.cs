@@ -391,9 +391,10 @@ public class TelegramBotHostedService : BackgroundService
         if (!int.TryParse(data["cancelar:".Length..], out int alertaId))
             return;
 
+
         using var scope = _scopeFactory.CreateScope();
         var alertaService = scope.ServiceProvider.GetRequiredService<IAlertaService>();
-        await alertaService.DesativarAlertaAsync(alertaId);
+        await alertaService.DesativarAlertaAsync(alertaId, chatId);
 
         await SendTelegramMessageAsync(botToken, chatId, "✅ Alerta cancelado com sucesso.", ct);
     }

@@ -7,6 +7,6 @@ public interface IAlertaService
     Task<AlertaEntity> CriarAlertaAsync(long chatId, string nomeDoJogo, string urlDoJogo, decimal precoAlvo);
     Task<List<AlertaEntity>> ObterAlertasAtivosAsync();
     Task<List<AlertaEntity>> ObterAlertasPorChatIdAsync(long chatId);
-    Task DesativarAlertaAsync(int alertaId);
+    Task DesativarAlertaAsync(int alertaId, long chatId);
     Task MarcarComoNotificadoAsync(int alertaId);
 }

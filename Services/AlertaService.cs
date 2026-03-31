@@ -56,10 +56,10 @@ public class AlertaService : IAlertaService
             .ToListAsync();
     }
 
-    public async Task DesativarAlertaAsync(int alertaId)
+    public async Task DesativarAlertaAsync(int alertaId, long chatId)
     {
         var alerta = await _context.Alertas.FindAsync(alertaId);
-        if (alerta is null)
+        if (alerta is null || alerta.TelegramChatId != chatId)
             return;
 
         alerta.Ativo = false;
