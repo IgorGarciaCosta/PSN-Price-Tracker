@@ -12,18 +12,20 @@ public class TelegramBotHostedService : BackgroundService
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IConfiguration _configuration;
     private readonly ILogger<TelegramBotHostedService> _logger;
-    private readonly HttpClient _httpClient = new();
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ConcurrentDictionary<long, PendingAlert> _pendingAlerts = new();
     private readonly ConcurrentDictionary<long, List<BuscaResultadoDTO>> _searchResults = new();
 
     public TelegramBotHostedService(
         IServiceScopeFactory scopeFactory,
         IConfiguration configuration,
-        ILogger<TelegramBotHostedService> logger)
+        ILogger<TelegramBotHostedService> logger,
+        IHttpClientFactory httpClientFactory)
     {
         _scopeFactory = scopeFactory;
         _configuration = configuration;
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -68,7 +70,8 @@ public class TelegramBotHostedService : BackgroundService
     private async Task<long> SkipPendingUpdatesAsync(string botToken, CancellationToken ct)
     {
         var url = $"https://api.telegram.org/bot{botToken}/getUpdates?offset=-1&timeout=0";
-        var response = await _httpClient.GetAsync(url, ct);
+        using var httpClient = _httpClientFactory.CreateClient();
+        var response = await httpClient.GetAsync(url, ct);
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync(ct);
@@ -96,7 +99,8 @@ public class TelegramBotHostedService : BackgroundService
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
         cts.CancelAfter(TimeSpan.FromSeconds(35));
 
-        var response = await _httpClient.GetAsync(url, cts.Token);
+        using var httpClient = _httpClientFactory.CreateClient();
+        var response = await httpClient.GetAsync(url, cts.Token);
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync(cts.Token);
@@ -469,7 +473,8 @@ public class TelegramBotHostedService : BackgroundService
             System.Text.Encoding.UTF8,
             "application/json");
 
-        var response = await _httpClient.PostAsync(url, content, ct);
+        using var httpClient = _httpClientFactory.CreateClient();
+        var response = await httpClient.PostAsync(url, content, ct);
         response.EnsureSuccessStatusCode();
     }
 
@@ -484,7 +489,8 @@ public class TelegramBotHostedService : BackgroundService
             System.Text.Encoding.UTF8,
             "application/json");
 
-        await _httpClient.PostAsync(url, content, ct);
+        using var httpClient = _httpClientFactory.CreateClient();
+        await httpClient.PostAsync(url, content, ct);
     }
 
     private async Task SendTelegramMessageWithKeyboardAsync(string botToken, long chatId, string message, object? replyMarkup, CancellationToken ct)
@@ -506,7 +512,8 @@ public class TelegramBotHostedService : BackgroundService
             System.Text.Encoding.UTF8,
             "application/json");
 
-        var response = await _httpClient.PostAsync(url, content, ct);
+        using var httpClient = _httpClientFactory.CreateClient();
+        var response = await httpClient.PostAsync(url, content, ct);
         response.EnsureSuccessStatusCode();
     }
 
@@ -526,7 +533,8 @@ public class TelegramBotHostedService : BackgroundService
             System.Text.Encoding.UTF8,
             "application/json");
 
-        var response = await _httpClient.PostAsync(url, content, ct);
+        using var httpClient = _httpClientFactory.CreateClient();
+        var response = await httpClient.PostAsync(url, content, ct);
         response.EnsureSuccessStatusCode();
     }
 
