@@ -44,12 +44,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 3. CONFIGURAÇÃO DO POLLY E SERVIÇOS
+var retryLogger = LoggerFactory.Create(b => b.AddConsole()).CreateLogger("Polly");
+
 var retryPolicy = HttpPolicyExtensions
     .HandleTransientHttpError()
     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
     onRetry: (outcome, timespan, retryAttempt, context) =>
     {
-        Console.WriteLine($"[POLLY] Falha no Telegram. Tentativa {retryAttempt}. Esperando {timespan.TotalSeconds}s...");
+        retryLogger.LogWarning("[POLLY] Falha no Telegram. Tentativa {RetryAttempt}. Esperando {Delay}s...", retryAttempt, timespan.TotalSeconds);
     });
 
 builder.Services.AddHttpClient<IPsnIntegrationService, PsnIntegrationService>();

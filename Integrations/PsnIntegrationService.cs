@@ -9,10 +9,12 @@ namespace PsnPriceTracker.Integrations
     public class PsnIntegrationService : IPsnIntegrationService
     {
         private readonly HttpClient _httpClient;
+        private readonly ILogger<PsnIntegrationService> _logger;
 
-        public PsnIntegrationService(HttpClient httpClient)
+        public PsnIntegrationService(HttpClient httpClient, ILogger<PsnIntegrationService> logger)
         {
             _httpClient = httpClient;
+            _logger = logger;
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
         }
         /// <summary>
@@ -36,7 +38,7 @@ namespace PsnPriceTracker.Integrations
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[SCRAPING ERROR] Failed to process URL: {ex.Message}");
+                _logger.LogError(ex, "Failed to process URL");
                 throw;
             }
         }

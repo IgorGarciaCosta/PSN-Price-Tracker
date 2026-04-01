@@ -9,6 +9,8 @@ namespace PsnPriceTracker.Services;
 
 public class TelegramBotHostedService : BackgroundService
 {
+    private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
+
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IConfiguration _configuration;
     private readonly ILogger<TelegramBotHostedService> _logger;
@@ -75,10 +77,7 @@ public class TelegramBotHostedService : BackgroundService
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync(ct);
-        var result = JsonSerializer.Deserialize<TelegramResponse>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        var result = JsonSerializer.Deserialize<TelegramResponse>(json, _jsonOptions);
 
         var updates = result?.Result ?? [];
 
@@ -104,10 +103,7 @@ public class TelegramBotHostedService : BackgroundService
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync(cts.Token);
-        var result = JsonSerializer.Deserialize<TelegramResponse>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        var result = JsonSerializer.Deserialize<TelegramResponse>(json, _jsonOptions);
 
         return result?.Result ?? [];
     }
