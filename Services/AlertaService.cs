@@ -16,14 +16,11 @@ public class AlertaService : IAlertaService
 
     public async Task<AlertaEntity> CriarAlertaAsync(long chatId, string nomeDoJogo, string urlDoJogo, decimal precoAlvo)
     {
-        var duplicata = await _context.Alertas
-            .AnyAsync(a => a.TelegramChatId == chatId && a.UrlDoJogo == urlDoJogo && a.Ativo);
+        var existente = await _context.Alertas
+            .FirstOrDefaultAsync(a => a.TelegramChatId == chatId && a.UrlDoJogo == urlDoJogo && a.Ativo);
 
-        if (duplicata)
+        if (existente is not null)
         {
-            var existente = await _context.Alertas
-                .FirstAsync(a => a.TelegramChatId == chatId && a.UrlDoJogo == urlDoJogo && a.Ativo);
-
             existente.PrecoAlvo = precoAlvo;
             await _context.SaveChangesAsync();
             return existente;
