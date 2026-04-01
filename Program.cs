@@ -58,6 +58,8 @@ builder.Services.AddHttpClient<IPsnIntegrationService, PsnIntegrationService>();
 builder.Services.AddHttpClient<ITelegramIntegrationService, TelegramIntegrationService>()
     .AddPolicyHandler(retryPolicy);
 
+builder.Services.AddSingleton<ITelegramBotApiService, TelegramBotApiService>();
+builder.Services.AddSingleton<TelegramCommandHandler>();
 builder.Services.AddScoped<IMonitoramentoService, MonitoramentoService>();
 builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
 builder.Services.AddScoped<IAlertaService, AlertaService>();
