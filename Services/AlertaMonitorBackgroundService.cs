@@ -1,4 +1,5 @@
 using PsnPriceTracker.Interfaces;
+using PsnPriceTracker.Models;
 
 namespace PsnPriceTracker.Services;
 
@@ -48,46 +49,67 @@ public class AlertaMonitorBackgroundService : BackgroundService
             return;
         }
 
-        _logger.LogInformation("Verificando {Count} alerta(s) ativo(s)...", alertas.Count);
+        var alertasPorUrl = alertas.GroupBy(a => a.UrlDoJogo);
+        _logger.LogInformation("Verificando {Count} alerta(s) ativo(s) para {UrlCount} jogo(s) único(s)...",
+            alertas.Count, alertasPorUrl.Count());
 
-        foreach (var alerta in alertas)
+        foreach (var grupo in alertasPorUrl)
         {
             if (ct.IsCancellationRequested)
                 break;
 
             try
             {
-                var dadosPsn = await psnService.GetCurrentPriceAsync(alerta.UrlDoJogo);
+                var dadosPsn = await psnService.GetCurrentPriceAsync(grupo.Key);
 
-                if (dadosPsn.PrecoAtual <= alerta.PrecoAlvo)
+                foreach (var alerta in grupo)
                 {
-                    var mensagem = $"🚨 *ALERTA DE PREÇO PSN!*\n\n"
-                                 + $"🎮 *Jogo:* {Helpers.MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
-                                 + $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n"
-                                 + $"🎯 *Seu Alvo:* R$ {alerta.PrecoAlvo}\n\n"
-                                 + $"🛒 [Comprar na PSN]({alerta.UrlDoJogo})";
-
-                    await telegramService.SendMessageAsync(alerta.TelegramChatId, mensagem);
-                    await alertaService.MarcarComoNotificadoAsync(alerta.Id);
-
-                    _logger.LogInformation("Alerta {Id} notificado para chat {ChatId} — {Jogo}",
-                        alerta.Id, alerta.TelegramChatId, alerta.NomeDoJogo);
-                }
-                else
-                {
-                    _logger.LogDebug("Alerta {Id} — {Jogo}: R$ {PrecoAtual} > R$ {PrecoAlvo}",
-                        alerta.Id, alerta.NomeDoJogo, dadosPsn.PrecoAtual, alerta.PrecoAlvo);
+                    await ProcessarAlertaAsync(alerta, dadosPsn, alertaService, telegramService);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao verificar alerta {Id} — {Jogo}", alerta.Id, alerta.NomeDoJogo);
+                _logger.LogError(ex, "Erro ao buscar preço para URL {Url}", grupo.Key);
             }
 
-            // Rate limiting: 2s entre consultas à PSN
+            // Rate limiting: 2s entre consultas à PSN (por URL única)
             await Task.Delay(TimeSpan.FromSeconds(2), ct);
         }
 
         _logger.LogInformation("Ciclo de verificação concluído.");
+    }
+
+    private async Task ProcessarAlertaAsync(
+        AlertaEntity alerta,
+        PrecoPsnDTO dadosPsn,
+        IAlertaService alertaService,
+        ITelegramIntegrationService telegramService)
+    {
+        try
+        {
+            if (dadosPsn.PrecoAtual <= alerta.PrecoAlvo)
+            {
+                var mensagem = $"🚨 *ALERTA DE PREÇO PSN!*\n\n"
+                             + $"🎮 *Jogo:* {Helpers.MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
+                             + $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n"
+                             + $"🎯 *Seu Alvo:* R$ {alerta.PrecoAlvo}\n\n"
+                             + $"🛒 [Comprar na PSN]({alerta.UrlDoJogo})";
+
+                await telegramService.SendMessageAsync(alerta.TelegramChatId, mensagem);
+                await alertaService.MarcarComoNotificadoAsync(alerta.Id);
+
+                _logger.LogInformation("Alerta {Id} notificado para chat {ChatId} — {Jogo}",
+                    alerta.Id, alerta.TelegramChatId, alerta.NomeDoJogo);
+            }
+            else
+            {
+                _logger.LogDebug("Alerta {Id} — {Jogo}: R$ {PrecoAtual} > R$ {PrecoAlvo}",
+                    alerta.Id, alerta.NomeDoJogo, dadosPsn.PrecoAtual, alerta.PrecoAlvo);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao processar alerta {Id} — {Jogo}", alerta.Id, alerta.NomeDoJogo);
+        }
     }
 }
