@@ -62,7 +62,7 @@ public class AlertaMonitorBackgroundService : BackgroundService
                 if (dadosPsn.PrecoAtual <= alerta.PrecoAlvo)
                 {
                     var mensagem = $"🚨 *ALERTA DE PREÇO PSN!*\n\n"
-                                 + $"🎮 *Jogo:* {dadosPsn.NomeDoJogo}\n"
+                                 + $"🎮 *Jogo:* {Helpers.MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
                                  + $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n"
                                  + $"🎯 *Seu Alvo:* R$ {alerta.PrecoAlvo}\n\n"
                                  + $"🛒 [Comprar na PSN]({alerta.UrlDoJogo})";

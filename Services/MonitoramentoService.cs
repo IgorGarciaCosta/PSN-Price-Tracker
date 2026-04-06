@@ -1,3 +1,4 @@
+using PsnPriceTracker.Helpers;
 using PsnPriceTracker.Interfaces;
 using PsnPriceTracker.Models;
 
@@ -24,7 +25,7 @@ namespace PsnPriceTracker.Services
             {
                 //formats the message and sends it to the Telegram service
                 string mensagem = $"🚨 *ALERTA DE PREÇO PSN!*\n\n" +
-                                $"🎮 *Jogo:* {dadosPsn.NomeDoJogo}\n" +
+                                $"🎮 *Jogo:* {MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n" +
                                 $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n" +
                                 $"🎯 *Seu Alvo:* R$ {request.PrecoAlvo}\n\n" +
                                 $"🛒 [Clique aqui para comprar]({request.UrlDoJogo})"; await _telegramService.SendMessageAsync(chatId, mensagem);

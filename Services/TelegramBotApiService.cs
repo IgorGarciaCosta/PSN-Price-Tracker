@@ -128,7 +128,7 @@ public class TelegramBotApiService : ITelegramBotApiService
 
     public async Task SendGameCardAsync(string botToken, long chatId, BuscaResultadoDTO jogo, object? inlineKeyboard, CancellationToken ct)
     {
-        var caption = $"🎮 *{jogo.NomeDoJogo}*\n"
+        var caption = $"🎮 *{Helpers.MarkdownSanitizer.Escape(jogo.NomeDoJogo)}*\n"
                     + $"🕹️ {jogo.Plataforma ?? "N/A"}\n"
                     + $"💰 {jogo.PrecoAtual ?? "Preço indisponível"}";
 

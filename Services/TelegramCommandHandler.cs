@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Globalization;
+using PsnPriceTracker.Helpers;
 using PsnPriceTracker.Interfaces;
 using PsnPriceTracker.Models;
 
@@ -120,7 +121,7 @@ public class TelegramCommandHandler
             return;
         }
 
-        await _botApi.SendMessageAsync(botToken, chatId, $"🔍 Buscando *{nomeDoJogo}* na PSN...", ct);
+        await _botApi.SendMessageAsync(botToken, chatId, $"🔍 Buscando *{MarkdownSanitizer.Escape(nomeDoJogo)}* na PSN...", ct);
 
         using var scope = _scopeFactory.CreateScope();
         var psnService = scope.ServiceProvider.GetRequiredService<IPsnIntegrationService>();
@@ -128,7 +129,7 @@ public class TelegramCommandHandler
 
         if (resultados.Count == 0)
         {
-            await _botApi.SendMessageAsync(botToken, chatId, $"😕 Nenhum jogo encontrado para *{nomeDoJogo}*.", ct);
+            await _botApi.SendMessageAsync(botToken, chatId, $"😕 Nenhum jogo encontrado para *{MarkdownSanitizer.Escape(nomeDoJogo)}*.", ct);
             return;
         }
 
@@ -189,7 +190,7 @@ public class TelegramCommandHandler
         _pendingAlerts[chatId] = new PendingAlert { UrlDoJogo = jogo.UrlDoJogo, NomeDoJogo = jogo.NomeDoJogo };
 
         await _botApi.SendMessageAsync(botToken, chatId,
-            $"✅ *{jogo.NomeDoJogo}* selecionado!\n\n💰 Qual o seu *preço-alvo*? (ex: 150.00)", ct);
+            $"✅ *{MarkdownSanitizer.Escape(jogo.NomeDoJogo)}* selecionado!\n\n💰 Qual o seu *preço-alvo*? (ex: 150.00)", ct);
     }
 
     private async Task HandleTextoLivreAsync(string botToken, long chatId, string messageText, CancellationToken ct)
@@ -223,7 +224,7 @@ public class TelegramCommandHandler
             if (dadosPsn.PrecoAtual <= precoAlvo)
             {
                 var msg = $"🚨 *ALERTA DE PREÇO PSN!*\n\n"
-                        + $"🎮 *Jogo:* {dadosPsn.NomeDoJogo}\n"
+                        + $"🎮 *Jogo:* {MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
                         + $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n"
                         + $"🎯 *Seu Alvo:* R$ {precoAlvo}\n\n"
                         + $"🛒 [Comprar na PSN]({pending.UrlDoJogo})";
@@ -233,7 +234,7 @@ public class TelegramCommandHandler
             else
             {
                 var msg = $"✅ *Alerta salvo!*\n\n"
-                        + $"🎮 *Jogo:* {dadosPsn.NomeDoJogo}\n"
+                        + $"🎮 *Jogo:* {MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
                         + $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n"
                         + $"🎯 *Seu Alvo:* R$ {precoAlvo}\n\n"
                         + $"🔔 Você será notificado quando o preço atingir seu alvo.\n"
@@ -266,7 +267,7 @@ public class TelegramCommandHandler
         for (int i = 0; i < alertas.Count; i++)
         {
             var a = alertas[i];
-            msg += $"{i + 1}. 🎮 *{a.NomeDoJogo}*\n"
+            msg += $"{i + 1}. 🎮 *{MarkdownSanitizer.Escape(a.NomeDoJogo)}*\n"
                  + $"   🎯 Alvo: R$ {a.PrecoAlvo}\n"
                  + $"   📅 Criado em: {a.CriadoEm:dd/MM/yyyy}\n\n";
         }
@@ -301,7 +302,7 @@ public class TelegramCommandHandler
                 }
             };
 
-            var msg = $"🎮 *{a.NomeDoJogo}*\n🎯 Alvo: R$ {a.PrecoAlvo}";
+            var msg = $"🎮 *{MarkdownSanitizer.Escape(a.NomeDoJogo)}*\n🎯 Alvo: R$ {a.PrecoAlvo}";
             await _botApi.SendMessageWithKeyboardAsync(botToken, chatId, msg, keyboard, ct);
         }
     }

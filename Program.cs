@@ -94,11 +94,11 @@ builder.Services.AddRateLimiter(options =>
 
 var app = builder.Build();
 
-// 4. AUTO-CRIAÇÃO DO BANCO
+// 5. AUTO-MIGRAÇÃO DO BANCO
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
+    db.Database.Migrate();
 }
 
 // 5. PIPELINE DE REQUISIÇÕES
