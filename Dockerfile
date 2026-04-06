@@ -6,7 +6,7 @@ COPY *.csproj ./
 RUN dotnet restore
 
 COPY . ./
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish PsnPriceTracker.csproj -c Release -o /app/publish
 
 # --- Runtime stage ---
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
