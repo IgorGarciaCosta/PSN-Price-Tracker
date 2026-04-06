@@ -109,9 +109,31 @@ namespace PsnPriceTracker.Integrations
         /// </summary>
         private async Task<string> FetchHtmlAsync(string url)
         {
+            ValidateUrl(url);
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
+        }
+
+        private static readonly HashSet<string> AllowedHosts = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "store.playstation.com"
+        };
+
+        /// <summary>
+        /// Validates that the URL uses HTTPS and targets an allowed PSN Store domain.
+        /// Prevents SSRF attacks by blocking requests to internal/unauthorized hosts.
+        /// </summary>
+        private static void ValidateUrl(string url)
+        {
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                throw new ArgumentException("URL inválida.");
+
+            if (!string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("Apenas URLs HTTPS são permitidas.");
+
+            if (!AllowedHosts.Contains(uri.Host))
+                throw new ArgumentException($"Domínio não permitido: {uri.Host}. Apenas store.playstation.com é aceito.");
         }
 
         /// <summary>
