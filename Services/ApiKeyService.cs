@@ -17,6 +17,14 @@ public class ApiKeyService : IApiKeyService
 
     public async Task<string> GerarApiKeyAsync(long telegramChatId)
     {
+        var existente = await _dbContext.ApiKeys
+            .Where(k => k.TelegramChatId == telegramChatId)
+            .Select(k => k.Chave)
+            .FirstOrDefaultAsync();
+
+        if (existente is not null)
+            return existente;
+
         var chave = GenerateSecureKey();
 
         var entity = new ApiKeyEntity
