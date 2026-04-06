@@ -29,14 +29,16 @@ public class ApiKeyMiddleware
         }
 
         var apiKeyService = context.RequestServices.GetRequiredService<IApiKeyService>();
-        var isValid = await apiKeyService.ValidarApiKeyAsync(extractedApiKey!);
+        var chatId = await apiKeyService.ObterChatIdPorApiKeyAsync(extractedApiKey!);
 
-        if (!isValid)
+        if (chatId is null)
         {
             context.Response.StatusCode = 401;
             await context.Response.WriteAsJsonAsync(new { Mensagem = "Acesso negado. API Key inválida." });
             return;
         }
+
+        context.Items["TelegramChatId"] = chatId.Value;
 
         await _next(context);
     }

@@ -37,6 +37,14 @@ public class ApiKeyService : IApiKeyService
         return await _dbContext.ApiKeys.AnyAsync(k => k.Chave == chave);
     }
 
+    public async Task<long?> ObterChatIdPorApiKeyAsync(string chave)
+    {
+        return await _dbContext.ApiKeys
+            .Where(k => k.Chave == chave)
+            .Select(k => (long?)k.TelegramChatId)
+            .FirstOrDefaultAsync();
+    }
+
     private static string GenerateSecureKey()
     {
         var bytes = RandomNumberGenerator.GetBytes(32);

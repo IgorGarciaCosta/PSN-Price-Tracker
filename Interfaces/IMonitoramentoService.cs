@@ -4,6 +4,6 @@ namespace PsnPriceTracker.Interfaces
 {
     public interface IMonitoramentoService
     {
-        Task<string> ProcessarAlertaAsync(AlertaRequestDTO request);
+        Task<string> ProcessarAlertaAsync(AlertaRequestDTO request, long chatId);
     }
 }

@@ -4,4 +4,5 @@ public interface IApiKeyService
 {
     Task<string> GerarApiKeyAsync(long telegramChatId);
     Task<bool> ValidarApiKeyAsync(string chave);
+    Task<long?> ObterChatIdPorApiKeyAsync(string chave);
 }

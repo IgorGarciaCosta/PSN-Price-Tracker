@@ -14,7 +14,7 @@ namespace PsnPriceTracker.Services
             _telegramService = telegramService;
         }
 
-        public async Task<string> ProcessarAlertaAsync(AlertaRequestDTO request)
+        public async Task<string> ProcessarAlertaAsync(AlertaRequestDTO request, long chatId)
         {
             //get price on PSN using the provided URL
             var dadosPsn = await _psnService.GetCurrentPriceAsync(request.UrlDoJogo);
@@ -27,7 +27,7 @@ namespace PsnPriceTracker.Services
                                 $"🎮 *Jogo:* {dadosPsn.NomeDoJogo}\n" +
                                 $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n" +
                                 $"🎯 *Seu Alvo:* R$ {request.PrecoAlvo}\n\n" +
-                                $"🛒 [Clique aqui para comprar]({request.UrlDoJogo})"; await _telegramService.SendMessageAsync(mensagem);
+                                $"🛒 [Clique aqui para comprar]({request.UrlDoJogo})"; await _telegramService.SendMessageAsync(chatId, mensagem);
 
                 return "Preço atingido! Notificação enviada.";
             }

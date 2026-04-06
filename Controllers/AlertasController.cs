@@ -33,8 +33,10 @@ namespace PsnPriceTracker.Controllers
         [HttpPost("testar")]
         public async Task<IActionResult> TestarAlerta([FromBody] AlertaRequestDTO request)
         {
+            var chatId = (long)HttpContext.Items["TelegramChatId"]!;
+
             //pass the hard work to the service layer
-            var resultado = await _monitoramentoService.ProcessarAlertaAsync(request);
+            var resultado = await _monitoramentoService.ProcessarAlertaAsync(request, chatId);
 
             return Ok(new { Mensagem = resultado });
         }

@@ -18,19 +18,6 @@ namespace PsnPriceTracker.Integrations
         }
 
         /// <summary>
-        /// Sends a text message to the configured Telegram chat using the Bot API.
-        /// </summary>
-        public async Task SendMessageAsync(string message)
-        {
-            var (botToken, chatId) = LoadTelegramCredentials();
-            var url = BuildApiUrl(botToken);
-            var content = BuildMessagePayload(chatId, message);
-
-            var response = await _httpClient.PostAsync(url, content);
-            response.EnsureSuccessStatusCode();
-        }
-
-        /// <summary>
         /// Sends a text message to a specific Telegram chat by chatId.
         /// </summary>
         public async Task SendMessageAsync(long chatId, string message)
@@ -44,21 +31,6 @@ namespace PsnPriceTracker.Integrations
 
             var response = await _httpClient.PostAsync(url, content);
             response.EnsureSuccessStatusCode();
-        }
-
-        /// <summary>
-        /// Reads the Telegram bot token and chat ID from configuration,
-        /// throwing if either value is missing.
-        /// </summary>
-        private (string botToken, string chatId) LoadTelegramCredentials()
-        {
-            var botToken = _configuration["Telegram:BotToken"];
-            var chatId = _configuration["Telegram:ChatId"];
-
-            if (string.IsNullOrEmpty(botToken) || string.IsNullOrEmpty(chatId))
-                throw new ArgumentException("As credenciais do Telegram não estão configuradas no appsettings.json.");
-
-            return (botToken, chatId);
         }
 
         /// <summary>
