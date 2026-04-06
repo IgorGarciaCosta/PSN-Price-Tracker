@@ -21,6 +21,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<AlertaEntity>(entity =>
         {
             entity.HasIndex(e => new { e.TelegramChatId, e.UrlDoJogo, e.Ativo });
+            entity.HasIndex(e => new { e.Ativo, e.TelegramChatId });
             entity.Property(e => e.UrlDoJogo).IsRequired().HasMaxLength(500);
             entity.Property(e => e.NomeDoJogo).IsRequired().HasMaxLength(300);
         });

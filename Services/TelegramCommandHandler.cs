@@ -11,8 +11,9 @@ public class TelegramCommandHandler
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ITelegramBotApiService _botApi;
     private readonly ILogger<TelegramCommandHandler> _logger;
-    private readonly ConcurrentDictionary<long, PendingAlert> _pendingAlerts = new();
-    private readonly ConcurrentDictionary<long, List<BuscaResultadoDTO>> _searchResults = new();
+    private readonly ConcurrentDictionary<long, TimestampedEntry<PendingAlert>> _pendingAlerts = new();
+    private readonly ConcurrentDictionary<long, TimestampedEntry<List<BuscaResultadoDTO>>> _searchResults = new();
+    private static readonly TimeSpan EntryTtl = TimeSpan.FromMinutes(30);
 
     public TelegramCommandHandler(
         IServiceScopeFactory scopeFactory,
@@ -26,6 +27,8 @@ public class TelegramCommandHandler
 
     public async Task ProcessUpdateAsync(string botToken, TelegramUpdate update, CancellationToken ct)
     {
+        CleanupExpiredEntries();
+
         if (update.CallbackQuery is not null)
         {
             var callbackChatId = update.CallbackQuery.Message?.Chat?.Id;
@@ -121,6 +124,10 @@ public class TelegramCommandHandler
             return;
         }
 
+        // Limpa estado anterior do mesmo usuário ao iniciar nova busca
+        _pendingAlerts.TryRemove(chatId, out _);
+        _searchResults.TryRemove(chatId, out _);
+
         await _botApi.SendMessageAsync(botToken, chatId, $"🔍 Buscando *{MarkdownSanitizer.Escape(nomeDoJogo)}* na PSN...", ct);
 
         using var scope = _scopeFactory.CreateScope();
@@ -136,14 +143,14 @@ public class TelegramCommandHandler
         if (resultados.Count == 1)
         {
             var jogo = resultados[0];
-            _pendingAlerts[chatId] = new PendingAlert { UrlDoJogo = jogo.UrlDoJogo, NomeDoJogo = jogo.NomeDoJogo };
+            _pendingAlerts[chatId] = new TimestampedEntry<PendingAlert>(new PendingAlert { UrlDoJogo = jogo.UrlDoJogo, NomeDoJogo = jogo.NomeDoJogo });
 
             await _botApi.SendGameCardAsync(botToken, chatId, jogo, inlineKeyboard: null, ct);
             await _botApi.SendMessageAsync(botToken, chatId, "💰 Qual o seu *preço-alvo*? (ex: 150.00)", ct);
             return;
         }
 
-        _searchResults[chatId] = resultados;
+        _searchResults[chatId] = new TimestampedEntry<List<BuscaResultadoDTO>>(resultados);
 
         for (int i = 0; i < resultados.Count; i++)
         {
@@ -180,14 +187,14 @@ public class TelegramCommandHandler
         if (!int.TryParse(data["buscar:".Length..], out int index))
             return;
 
-        if (!_searchResults.TryRemove(chatId, out var resultados) || index < 0 || index >= resultados.Count)
+        if (!_searchResults.TryRemove(chatId, out var entry) || entry.IsExpired(EntryTtl) || index < 0 || index >= entry.Value.Count)
         {
             await _botApi.SendMessageAsync(botToken, chatId, "⚠️ Resultado expirado. Use /buscar novamente.", ct);
             return;
         }
 
-        var jogo = resultados[index];
-        _pendingAlerts[chatId] = new PendingAlert { UrlDoJogo = jogo.UrlDoJogo, NomeDoJogo = jogo.NomeDoJogo };
+        var jogo = entry.Value[index];
+        _pendingAlerts[chatId] = new TimestampedEntry<PendingAlert>(new PendingAlert { UrlDoJogo = jogo.UrlDoJogo, NomeDoJogo = jogo.NomeDoJogo });
 
         await _botApi.SendMessageAsync(botToken, chatId,
             $"✅ *{MarkdownSanitizer.Escape(jogo.NomeDoJogo)}* selecionado!\n\n💰 Qual o seu *preço-alvo*? (ex: 150.00)", ct);
@@ -195,8 +202,13 @@ public class TelegramCommandHandler
 
     private async Task HandleTextoLivreAsync(string botToken, long chatId, string messageText, CancellationToken ct)
     {
-        if (!_pendingAlerts.TryGetValue(chatId, out var pending))
+        if (!_pendingAlerts.TryGetValue(chatId, out var entry) || entry.IsExpired(EntryTtl))
+        {
+            _pendingAlerts.TryRemove(chatId, out _);
             return;
+        }
+
+        var pending = entry.Value;
 
         var cleanText = messageText.Trim()
             .Replace("R$", "", StringComparison.OrdinalIgnoreCase)
@@ -323,5 +335,26 @@ public class TelegramCommandHandler
     {
         public string UrlDoJogo { get; set; } = string.Empty;
         public string NomeDoJogo { get; set; } = string.Empty;
+    }
+
+    private sealed record TimestampedEntry<T>(T Value)
+    {
+        public DateTime CreatedAtUtc { get; } = DateTime.UtcNow;
+        public bool IsExpired(TimeSpan ttl) => DateTime.UtcNow - CreatedAtUtc > ttl;
+    }
+
+    private void CleanupExpiredEntries()
+    {
+        foreach (var key in _pendingAlerts.Keys)
+        {
+            if (_pendingAlerts.TryGetValue(key, out var pa) && pa.IsExpired(EntryTtl))
+                _pendingAlerts.TryRemove(key, out _);
+        }
+
+        foreach (var key in _searchResults.Keys)
+        {
+            if (_searchResults.TryGetValue(key, out var sr) && sr.IsExpired(EntryTtl))
+                _searchResults.TryRemove(key, out _);
+        }
     }
 }
