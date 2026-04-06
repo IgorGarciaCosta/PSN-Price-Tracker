@@ -12,6 +12,7 @@ using PsnPriceTracker.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
 
 // 1. CONFIGURAÇÃO DO SWAGGER (Com o Cadeado visual)

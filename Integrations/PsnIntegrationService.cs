@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Caching.Memory;
 using PsnPriceTracker.Interfaces;
 using PsnPriceTracker.Models;
 
@@ -10,11 +11,14 @@ namespace PsnPriceTracker.Integrations
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<PsnIntegrationService> _logger;
+        private readonly IMemoryCache _cache;
+        private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
 
-        public PsnIntegrationService(HttpClient httpClient, ILogger<PsnIntegrationService> logger)
+        public PsnIntegrationService(HttpClient httpClient, ILogger<PsnIntegrationService> logger, IMemoryCache cache)
         {
             _httpClient = httpClient;
             _logger = logger;
+            _cache = cache;
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
         }
         /// <summary>
@@ -22,6 +26,14 @@ namespace PsnPriceTracker.Integrations
         /// </summary>
         public async Task<PrecoPsnDTO> GetCurrentPriceAsync(string gameUrl)
         {
+            var cacheKey = $"psn_price:{gameUrl}";
+
+            if (_cache.TryGetValue(cacheKey, out PrecoPsnDTO? cached) && cached is not null)
+            {
+                _logger.LogDebug("Cache hit para {Url}", gameUrl);
+                return cached;
+            }
+
             try
             {
                 var html = await FetchHtmlAsync(gameUrl);
@@ -30,11 +42,15 @@ namespace PsnPriceTracker.Integrations
                 string gameName = ExtractGameName(htmlDoc);
                 decimal currentPrice = ExtractPrice(htmlDoc);
 
-                return new PrecoPsnDTO
+                var resultado = new PrecoPsnDTO
                 {
                     NomeDoJogo = gameName,
                     PrecoAtual = currentPrice
                 };
+
+                _cache.Set(cacheKey, resultado, CacheDuration);
+
+                return resultado;
             }
             catch (Exception ex)
             {
