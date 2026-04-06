@@ -14,8 +14,8 @@ public class AppDbContext : DbContext
     {
         modelBuilder.Entity<ApiKeyEntity>(entity =>
         {
-            entity.HasIndex(e => e.Chave).IsUnique();
-            entity.Property(e => e.Chave).IsRequired().HasMaxLength(64);
+            entity.HasIndex(e => e.ChaveHash).IsUnique();
+            entity.Property(e => e.ChaveHash).IsRequired().HasMaxLength(64);
         });
 
         modelBuilder.Entity<AlertaEntity>(entity =>

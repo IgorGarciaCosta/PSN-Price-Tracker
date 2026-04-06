@@ -17,19 +17,18 @@ public class ApiKeyService : IApiKeyService
 
     public async Task<string> GerarApiKeyAsync(long telegramChatId)
     {
-        var existente = await _dbContext.ApiKeys
-            .Where(k => k.TelegramChatId == telegramChatId)
-            .Select(k => k.Chave)
-            .FirstOrDefaultAsync();
+        var jaExiste = await _dbContext.ApiKeys
+            .AnyAsync(k => k.TelegramChatId == telegramChatId);
 
-        if (existente is not null)
-            return existente;
+        if (jaExiste)
+            return string.Empty;
 
-        var chave = GenerateSecureKey();
+        var chaveRaw = GenerateSecureKey();
+        var hash = HashKey(chaveRaw);
 
         var entity = new ApiKeyEntity
         {
-            Chave = chave,
+            ChaveHash = hash,
             TelegramChatId = telegramChatId,
             CriadoEm = DateTime.UtcNow
         };
@@ -37,18 +36,20 @@ public class ApiKeyService : IApiKeyService
         _dbContext.ApiKeys.Add(entity);
         await _dbContext.SaveChangesAsync();
 
-        return chave;
+        return chaveRaw;
     }
 
     public async Task<bool> ValidarApiKeyAsync(string chave)
     {
-        return await _dbContext.ApiKeys.AnyAsync(k => k.Chave == chave);
+        var hash = HashKey(chave);
+        return await _dbContext.ApiKeys.AnyAsync(k => k.ChaveHash == hash);
     }
 
     public async Task<long?> ObterChatIdPorApiKeyAsync(string chave)
     {
+        var hash = HashKey(chave);
         return await _dbContext.ApiKeys
-            .Where(k => k.Chave == chave)
+            .Where(k => k.ChaveHash == hash)
             .Select(k => (long?)k.TelegramChatId)
             .FirstOrDefaultAsync();
     }
@@ -57,5 +58,11 @@ public class ApiKeyService : IApiKeyService
     {
         var bytes = RandomNumberGenerator.GetBytes(32);
         return Convert.ToBase64String(bytes);
+    }
+
+    private static string HashKey(string key)
+    {
+        var bytes = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(key));
+        return Convert.ToHexStringLower(bytes);
     }
 }

@@ -86,6 +86,15 @@ public class TelegramCommandHandler
         var apiKeyService = scope.ServiceProvider.GetRequiredService<IApiKeyService>();
         var chave = await apiKeyService.GerarApiKeyAsync(chatId);
 
+        if (string.IsNullOrEmpty(chave))
+        {
+            var aviso = "⚠️ Você já possui uma API Key gerada.\n\n"
+                + "Por segurança, a chave só é exibida no momento da criação.\n"
+                + "Caso tenha perdido, entre em contato para regenerar.";
+            await _botApi.SendMessageAsync(botToken, chatId, aviso, ct);
+            return;
+        }
+
         var mensagem = "🔑 *Sua API Key foi gerada com sucesso!*\n\n"
              + $"`{chave}`\n\n"
              + "📋 *Como usar:*\n"
