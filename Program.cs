@@ -1,3 +1,5 @@
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Polly;
@@ -66,6 +68,30 @@ builder.Services.AddScoped<IAlertaService, AlertaService>();
 builder.Services.AddHostedService<TelegramBotHostedService>();
 builder.Services.AddHostedService<AlertaMonitorBackgroundService>();
 
+// 4. RATE LIMITING (Proteção contra brute force)
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter("fixed", limiterOptions =>
+    {
+        limiterOptions.PermitLimit = 10;
+        limiterOptions.Window = TimeSpan.FromMinutes(1);
+        limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        limiterOptions.QueueLimit = 0;
+    });
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+    {
+        var remoteIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(remoteIp, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromMinutes(1),
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 0
+        });
+    });
+});
+
 var app = builder.Build();
 
 // 4. AUTO-CRIAÇÃO DO BANCO
@@ -86,6 +112,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Rate Limiter roda antes de tudo — bloqueia brute force antes de validar a API Key.
+app.UseRateLimiter();
 
 // O Middleware roda antes dos controllers. Se barrar, nem chega no Controller.
 app.UseApiKeyAuth();
