@@ -9,12 +9,22 @@ public class TelegramBotApiService : ITelegramBotApiService
     private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
 
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IConfiguration _configuration;
     private readonly ILogger<TelegramBotApiService> _logger;
 
-    public TelegramBotApiService(IHttpClientFactory httpClientFactory, ILogger<TelegramBotApiService> logger)
+    public TelegramBotApiService(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<TelegramBotApiService> logger)
     {
         _httpClientFactory = httpClientFactory;
+        _configuration = configuration;
         _logger = logger;
+    }
+
+    private string GetBotToken()
+    {
+        var token = _configuration["Telegram:BotToken"];
+        if (string.IsNullOrEmpty(token))
+            throw new InvalidOperationException("O BotToken do Telegram não está configurado no appsettings.json.");
+        return token;
     }
 
     public async Task<long> SkipPendingUpdatesAsync(string botToken, CancellationToken ct)
@@ -77,7 +87,12 @@ public class TelegramBotApiService : ITelegramBotApiService
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task SendMessageWithKeyboardAsync(string botToken, long chatId, string message, object? replyMarkup, CancellationToken ct)
+    public async Task SendMessageAsync(long chatId, string message)
+    {
+        await SendMessageAsync(GetBotToken(), chatId, message, CancellationToken.None);
+    }
+
+    public async Task SendMessageWithKeyboardAsync(string botToken, long chatId, string message, InlineKeyboardMarkup? replyMarkup, CancellationToken ct)
     {
         var url = $"https://api.telegram.org/bot{botToken}/sendMessage";
 
@@ -101,7 +116,7 @@ public class TelegramBotApiService : ITelegramBotApiService
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task SendPhotoAsync(string botToken, long chatId, string photoUrl, string caption, object? replyMarkup, CancellationToken ct)
+    public async Task SendPhotoAsync(string botToken, long chatId, string photoUrl, string caption, InlineKeyboardMarkup? replyMarkup, CancellationToken ct)
     {
         var url = $"https://api.telegram.org/bot{botToken}/sendPhoto";
 
@@ -126,7 +141,7 @@ public class TelegramBotApiService : ITelegramBotApiService
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task SendGameCardAsync(string botToken, long chatId, BuscaResultadoDTO jogo, object? inlineKeyboard, CancellationToken ct)
+    public async Task SendGameCardAsync(string botToken, long chatId, BuscaResultadoDTO jogo, InlineKeyboardMarkup? inlineKeyboard, CancellationToken ct)
     {
         var caption = $"🎮 *{Helpers.MarkdownSanitizer.Escape(jogo.NomeDoJogo)}*\n"
                     + $"🕹️ {jogo.Plataforma ?? "N/A"}\n"

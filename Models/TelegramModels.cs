@@ -35,3 +35,25 @@ public class TelegramChat
 {
     public long? Id { get; set; }
 }
+
+public class InlineKeyboardMarkup
+{
+    [JsonPropertyName("inline_keyboard")]
+    public List<List<InlineKeyboardButton>> InlineKeyboard { get; set; } = [];
+
+    public InlineKeyboardMarkup() { }
+
+    public InlineKeyboardMarkup(params InlineKeyboardButton[] singleRow)
+    {
+        InlineKeyboard = [new List<InlineKeyboardButton>(singleRow)];
+    }
+}
+
+public class InlineKeyboardButton
+{
+    [JsonPropertyName("text")]
+    public string Text { get; set; } = string.Empty;
+
+    [JsonPropertyName("callback_data")]
+    public string? CallbackData { get; set; }
+}

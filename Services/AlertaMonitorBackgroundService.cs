@@ -39,7 +39,7 @@ public class AlertaMonitorBackgroundService : BackgroundService
         using var scope = _scopeFactory.CreateScope();
         var alertaService = scope.ServiceProvider.GetRequiredService<IAlertaService>();
         var psnService = scope.ServiceProvider.GetRequiredService<IPsnIntegrationService>();
-        var telegramService = scope.ServiceProvider.GetRequiredService<ITelegramIntegrationService>();
+        var telegramService = scope.ServiceProvider.GetRequiredService<ITelegramBotApiService>();
 
         var alertas = await alertaService.ObterAlertasAtivosAsync();
 
@@ -83,7 +83,7 @@ public class AlertaMonitorBackgroundService : BackgroundService
         AlertaEntity alerta,
         PrecoPsnDTO dadosPsn,
         IAlertaService alertaService,
-        ITelegramIntegrationService telegramService)
+        ITelegramBotApiService telegramService)
     {
         try
         {

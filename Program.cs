@@ -2,13 +2,13 @@ using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Polly;
-using Polly.Extensions.Http;
 using PsnPriceTracker.Data;
 using PsnPriceTracker.Integrations;
 using PsnPriceTracker.Interfaces;
 using PsnPriceTracker.Middleware;
 using PsnPriceTracker.Services;
+using PsnPriceTracker.Services.Callbacks;
+using PsnPriceTracker.Services.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,23 +46,21 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 3. CONFIGURAÇÃO DO POLLY E SERVIÇOS
-var retryLogger = LoggerFactory.Create(b => b.AddConsole()).CreateLogger("Polly");
-
-var retryPolicy = HttpPolicyExtensions
-    .HandleTransientHttpError()
-    .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-    onRetry: (outcome, timespan, retryAttempt, context) =>
-    {
-        retryLogger.LogWarning("[POLLY] Falha no Telegram. Tentativa {RetryAttempt}. Esperando {Delay}s...", retryAttempt, timespan.TotalSeconds);
-    });
+// 3. SERVIÇOS
 
 builder.Services.AddHttpClient<IPsnIntegrationService, PsnIntegrationService>();
-builder.Services.AddHttpClient<ITelegramIntegrationService, TelegramIntegrationService>()
-    .AddPolicyHandler(retryPolicy);
 
 builder.Services.AddSingleton<ITelegramBotApiService, TelegramBotApiService>();
+builder.Services.AddSingleton<TelegramSessionManager>();
 builder.Services.AddSingleton<TelegramCommandHandler>();
+builder.Services.AddSingleton<TextoLivreHandler>();
+builder.Services.AddSingleton<ITelegramCommand, StartCommandHandler>();
+builder.Services.AddSingleton<ITelegramCommand, GerarKeyCommandHandler>();
+builder.Services.AddSingleton<ITelegramCommand, BuscarCommandHandler>();
+builder.Services.AddSingleton<ITelegramCommand, MeusAlertasCommandHandler>();
+builder.Services.AddSingleton<ITelegramCommand, CancelarCommandHandler>();
+builder.Services.AddSingleton<ITelegramCallbackHandler, BuscarCallbackHandler>();
+builder.Services.AddSingleton<ITelegramCallbackHandler, CancelarCallbackHandler>();
 builder.Services.AddScoped<IMonitoramentoService, MonitoramentoService>();
 builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
 builder.Services.AddScoped<IAlertaService, AlertaService>();

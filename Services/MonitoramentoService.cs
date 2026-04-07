@@ -7,9 +7,9 @@ namespace PsnPriceTracker.Services
     public class MonitoramentoService : IMonitoramentoService
     {
         private readonly IPsnIntegrationService _psnService;
-        private readonly ITelegramIntegrationService _telegramService;
+        private readonly ITelegramBotApiService _telegramService;
 
-        public MonitoramentoService(IPsnIntegrationService psnService, ITelegramIntegrationService telegramService)
+        public MonitoramentoService(IPsnIntegrationService psnService, ITelegramBotApiService telegramService)
         {
             _psnService = psnService;
             _telegramService = telegramService;
