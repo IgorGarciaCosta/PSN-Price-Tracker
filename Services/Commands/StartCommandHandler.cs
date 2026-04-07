@@ -18,7 +18,7 @@ public class StartCommandHandler : ITelegramCommand
         var mensagem = "👋 *Bem-vindo ao PSN Price Tracker!*\n\n"
                      + "Eu sou o bot que monitora preços de jogos na PSN.\n\n"
                      + "📋 *Comandos disponíveis:*\n"
-                     + "/buscar `nome do jogo` — Busca jogos na PSN\n"
+                     + "/buscar `(nome do jogo)` — Busca jogos na PSN\n"
                      + "/meusalertas — Lista seus alertas ativos\n"
                      + "/cancelar — Cancela um alerta ativo\n"
                      + "/gerarkey — Gera sua API Key\n\n"

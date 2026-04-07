@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PsnPriceTracker</name>
+    </assembly>
+    <members>
+        <member name="M:PsnPriceTracker.Controllers.AlertasController.BuscarJogo(System.String)">
+            <summary>
+            Busca jogos na PlayStation Store pelo nome.
+            </summary>
+            <param name="nome">Nome do jogo a ser buscado.</param>
+        </member>
+        <member name="T:PsnPriceTracker.Helpers.MarkdownSanitizer">
+            <summary>
+            Escapes special characters for Telegram's legacy Markdown parse mode.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Integrations.PsnIntegrationService.GetCurrentPriceAsync(System.String)">
+            <summary>
+            Scrapes the PSN Store page for the given game URL and returns the game name and current price.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Integrations.PsnIntegrationService.BuscarJogosPorNomeAsync(System.String)">
+            <summary>
+            Searches the PSN Store API by game name and returns up to 5 matching games.
+            Uses the internal Chihiro/tumbler API which provides fuzzy matching.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Integrations.PsnIntegrationService.EnrichMissingPricesAsync(System.Collections.Generic.List{PsnPriceTracker.Models.BuscaResultadoDTO})">
+            <summary>
+            For each result with a null price, attempts to fetch the price from the
+            Chihiro Container (detail) API in parallel.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Integrations.PsnIntegrationService.FetchPriceFromContainerAsync(System.String)">
+            <summary>
+            Fetches the price from the Chihiro Container (detail) API for a single product.
+            Returns the display_price string or null if unavailable.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Integrations.PsnIntegrationService.FetchHtmlAsync(System.String)">
+            <summary>
+            Sends a GET request to the given URL and returns the raw HTML content.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Integrations.PsnIntegrationService.ValidateUrl(System.String)">
+            <summary>
+            Validates that the URL uses HTTPS and targets an allowed PSN Store domain.
+            Prevents SSRF attacks by blocking requests to internal/unauthorized hosts.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Integrations.PsnIntegrationService.ParseHtml(System.String)">
+            <summary>
+            Loads raw HTML into an HtmlAgilityPack document for XPath querying.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Integrations.PsnIntegrationService.ExtractGameName(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Extracts the game name from the parsed HTML using PSN's data-qa attributes,
+            falling back to the first h1 element if the primary selector is not found.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Integrations.PsnIntegrationService.ExtractPrice(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Extracts the purchase price by iterating through available offers (offer0, offer1, etc.).
+            PS Plus games show "Incluído" in offer0, so the method skips non-numeric values
+            and falls back to the original price if no numeric final price is found.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Integrations.PsnIntegrationService.TryParsePrice(System.String,System.Decimal@)">
+            <summary>
+            Removes currency symbols and whitespace from the price text
+            and attempts to parse it as a decimal using Brazilian (pt-BR) formatting.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Interfaces.IPsnIntegrationService.GetCurrentPriceAsync(System.String)">
+            <summary>
+            Scrapes the PSN Store page for the given game URL and returns the game name and current price.
+            </summary>
+        </member>
+        <member name="M:PsnPriceTracker.Interfaces.IPsnIntegrationService.BuscarJogosPorNomeAsync(System.String)">
+            <summary>
+            Searches the PSN Store by game name and returns a list of matching results.
+            </summary>
+        </member>
+        <member name="T:PsnPriceTracker.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:PsnPriceTracker.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:PsnPriceTracker.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:PsnPriceTracker.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

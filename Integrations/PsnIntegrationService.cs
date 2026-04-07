@@ -117,7 +117,69 @@ namespace PsnPriceTracker.Integrations
                     break;
             }
 
+            await EnrichMissingPricesAsync(resultados);
+
             return resultados;
+        }
+
+        /// <summary>
+        /// For each result with a null price, attempts to fetch the price from the
+        /// Chihiro Container (detail) API in parallel.
+        /// </summary>
+        private async Task EnrichMissingPricesAsync(List<BuscaResultadoDTO> resultados)
+        {
+            var semPreco = resultados.Where(r => string.IsNullOrEmpty(r.PrecoAtual)).ToList();
+            if (semPreco.Count == 0) return;
+
+            var tasks = semPreco.Select(async resultado =>
+            {
+                var productId = resultado.UrlDoJogo.Split("/product/").LastOrDefault();
+                if (string.IsNullOrEmpty(productId)) return;
+
+                var price = await FetchPriceFromContainerAsync(productId);
+                if (!string.IsNullOrEmpty(price))
+                    resultado.PrecoAtual = price;
+            });
+
+            await Task.WhenAll(tasks);
+        }
+
+        /// <summary>
+        /// Fetches the price from the Chihiro Container (detail) API for a single product.
+        /// Returns the display_price string or null if unavailable.
+        /// </summary>
+        private async Task<string?> FetchPriceFromContainerAsync(string productId)
+        {
+            var cacheKey = $"psn_container_price:{productId}";
+
+            if (_cache.TryGetValue(cacheKey, out string? cached))
+                return cached;
+
+            try
+            {
+                var url = $"https://store.playstation.com/store/api/chihiro/00_09_000/container/BR/pt/999/{Uri.EscapeDataString(productId)}";
+                var response = await _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+
+                string? price = null;
+
+                if (doc.RootElement.TryGetProperty("default_sku", out var sku)
+                    && sku.TryGetProperty("display_price", out var dp))
+                {
+                    price = dp.GetString();
+                }
+
+                _cache.Set(cacheKey, price, CacheDuration);
+                return price;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Fallback: falha ao buscar preço via Container API para {ProductId}", productId);
+                return null;
+            }
         }
 
         /// <summary>
