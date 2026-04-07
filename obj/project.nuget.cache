@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "OGbLWFXqMFw=",
+  "dgSpecHash": "WMDnx0n9jUc=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj",
+  "projectFilePath": "c:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ISILV125\\.nuget\\packages\\htmlagilitypack\\1.12.4\\htmlagilitypack.1.12.4.nupkg.sha512",
     "C:\\Users\\ISILV125\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

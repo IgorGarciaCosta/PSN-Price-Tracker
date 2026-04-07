@@ -28,11 +28,11 @@ public class TelegramBotHostedService : BackgroundService
 
         if (string.IsNullOrEmpty(botToken))
         {
-            _logger.LogWarning("Telegram BotToken não configurado. Long polling desativado.");
+            _logger.LogWarning("Telegram BotToken not configured. Long polling disabled.");
             return;
         }
 
-        _logger.LogInformation("Telegram Bot Long Polling iniciado.");
+        _logger.LogInformation("Telegram Bot Long Polling started.");
 
         long offset = await _botApi.SkipPendingUpdatesAsync(botToken, stoppingToken);
 

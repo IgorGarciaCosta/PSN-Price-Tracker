@@ -27,7 +27,7 @@ public class BuscarCallbackHandler : ITelegramCallbackHandler
         var resultados = _session.TryRemoveSearchResults(chatId);
         if (resultados is null || index < 0 || index >= resultados.Count)
         {
-            await _botApi.SendMessageAsync(botToken, chatId, "⚠️ Resultado expirado. Use /buscar novamente.", ct);
+            await _botApi.SendMessageAsync(botToken, chatId, "⚠️ Result expired. Use /buscar again.", ct);
             return;
         }
 
@@ -35,6 +35,6 @@ public class BuscarCallbackHandler : ITelegramCallbackHandler
         _session.SetPendingAlert(chatId, jogo.UrlDoJogo, jogo.NomeDoJogo);
 
         await _botApi.SendMessageAsync(botToken, chatId,
-            $"✅ *{MarkdownSanitizer.Escape(jogo.NomeDoJogo)}* selecionado!\n\n💰 Qual o seu *preço-alvo*? (ex: 150.00)", ct);
+            $"✅ *{MarkdownSanitizer.Escape(jogo.NomeDoJogo)}* selected!\n\n💰 What is your *target price*? (e.g. 150.00)", ct);
     }
 }

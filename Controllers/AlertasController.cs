@@ -30,12 +30,12 @@ namespace PsnPriceTracker.Controllers
         public async Task<IActionResult> BuscarJogo([FromQuery] string nome)
         {
             if (string.IsNullOrWhiteSpace(nome))
-                return BadRequest(new { Mensagem = "O parâmetro 'nome' é obrigatório." });
+                return BadRequest(new { Message = "The 'nome' parameter is required." });
 
             var resultados = await _psnService.BuscarJogosPorNomeAsync(nome);
 
             if (resultados.Count == 0)
-                return NotFound(new { Mensagem = $"Nenhum jogo encontrado para '{nome}'." });
+                return NotFound(new { Message = $"No games found for '{nome}'." });
 
             return Ok(resultados);
         }

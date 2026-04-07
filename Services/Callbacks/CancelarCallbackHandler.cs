@@ -27,6 +27,6 @@ public class CancelarCallbackHandler : ITelegramCallbackHandler
         var alertaService = scope.ServiceProvider.GetRequiredService<IAlertaService>();
         await alertaService.DesativarAlertaAsync(alertaId, chatId);
 
-        await _botApi.SendMessageAsync(botToken, chatId, "✅ Alerta cancelado com sucesso.", ct);
+        await _botApi.SendMessageAsync(botToken, chatId, "✅ Alert cancelled successfully.", ct);
     }
 }

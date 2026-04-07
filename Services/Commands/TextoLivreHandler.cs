@@ -33,7 +33,7 @@ public class TextoLivreHandler
         if (!decimal.TryParse(cleanText, new CultureInfo("pt-BR"), out decimal precoAlvo) || precoAlvo <= 0)
         {
             await _botApi.SendMessageAsync(botToken, chatId,
-                "⚠️ Preço inválido. Digite apenas o valor numérico.\n\nExemplo: `150` ou `99.90`", ct);
+                "⚠️ Invalid price. Enter only the numeric value.\n\nExample: `150` or `99.90`", ct);
             return;
         }
 
@@ -50,31 +50,31 @@ public class TextoLivreHandler
 
             if (dadosPsn.PrecoAtual <= precoAlvo)
             {
-                var msg = $"🚨 *ALERTA DE PREÇO PSN!*\n\n"
-                        + $"🎮 *Jogo:* {MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
-                        + $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n"
-                        + $"🎯 *Seu Alvo:* R$ {precoAlvo}\n\n"
-                        + $"🛒 [Comprar na PSN]({pending.UrlDoJogo})";
+                var msg = $"🚨 *PSN PRICE ALERT!*\n\n"
+                        + $"🎮 *Game:* {MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
+                        + $"💰 *Current Price:* R$ {dadosPsn.PrecoAtual}\n"
+                        + $"🎯 *Your Target:* R$ {precoAlvo}\n\n"
+                        + $"🛒 [Buy on PSN]({pending.UrlDoJogo})";
 
                 await _botApi.SendMessageAsync(botToken, chatId, msg, ct);
             }
             else
             {
-                var msg = $"✅ *Alerta salvo!*\n\n"
-                        + $"🎮 *Jogo:* {MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
-                        + $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n"
-                        + $"🎯 *Seu Alvo:* R$ {precoAlvo}\n\n"
-                        + $"🔔 Você será notificado quando o preço atingir seu alvo.\n"
-                        + $"Use /meusalertas para ver seus alertas ativos.";
+                var msg = $"✅ *Alert saved!*\n\n"
+                        + $"🎮 *Game:* {MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
+                        + $"💰 *Current Price:* R$ {dadosPsn.PrecoAtual}\n"
+                        + $"🎯 *Your Target:* R$ {precoAlvo}\n\n"
+                        + $"🔔 You will be notified when the price reaches your target.\n"
+                        + $"Use /meusalertas to see your active alerts.";
 
                 await _botApi.SendMessageAsync(botToken, chatId, msg, ct);
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar preço para {Url}", pending.UrlDoJogo);
+            _logger.LogError(ex, "Error fetching price for {Url}", pending.UrlDoJogo);
             await _botApi.SendMessageAsync(botToken, chatId,
-                "⚠️ Alerta salvo, mas não foi possível verificar o preço atual. Você será notificado quando o preço atingir seu alvo.", ct);
+                "⚠️ Alert saved, but we couldn't check the current price. You will be notified when the price reaches your target.", ct);
         }
     }
 }

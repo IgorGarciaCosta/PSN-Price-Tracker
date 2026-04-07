@@ -47,7 +47,7 @@ public class TelegramCommandHandler
         if (string.IsNullOrEmpty(messageText) || chatId is null)
             return;
 
-        _logger.LogInformation("Comando recebido: {Comando} do chat {ChatId}", messageText, chatId);
+        _logger.LogInformation("Command received: {Comando} from chat {ChatId}", messageText, chatId);
 
         var commandKey = messageText.Split(' ')[0].ToLowerInvariant();
 

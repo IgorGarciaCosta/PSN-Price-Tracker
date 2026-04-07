@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj": {}
+    "c:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj": {
+    "c:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj",
+        "projectUniqueName": "c:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj",
         "projectName": "PsnPriceTracker",
-        "projectPath": "C:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj",
+        "projectPath": "c:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\PsnPriceTracker.csproj",
         "packagesPath": "C:\\Users\\ISILV125\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\obj\\",
+        "outputPath": "c:\\Users\\ISILV125\\Documents\\GitHub\\PSN-Price-Tracker\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

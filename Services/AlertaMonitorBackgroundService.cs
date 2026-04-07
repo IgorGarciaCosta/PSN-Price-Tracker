@@ -72,7 +72,7 @@ public class AlertaMonitorBackgroundService : BackgroundService
                 _logger.LogError(ex, "Error fetching price for URL {Url}", grupo.Key);
             }
 
-            // Rate limiting: 2s entre consultas à PSN (por URL única)
+            // Rate limiting: 2s between PSN queries (per unique URL)
             await Task.Delay(TimeSpan.FromSeconds(2), ct);
         }
 

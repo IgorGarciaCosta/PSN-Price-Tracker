@@ -23,7 +23,7 @@ public class TelegramBotApiService : ITelegramBotApiService
     {
         var token = _configuration["Telegram:BotToken"];
         if (string.IsNullOrEmpty(token))
-            throw new InvalidOperationException("O BotToken do Telegram não está configurado no appsettings.json.");
+            throw new InvalidOperationException("The Telegram BotToken is not configured in appsettings.json.");
         return token;
     }
 
@@ -42,7 +42,7 @@ public class TelegramBotApiService : ITelegramBotApiService
         if (updates.Count > 0)
         {
             var lastId = updates[^1].UpdateId;
-            _logger.LogInformation("Descartados {Count} updates antigos. Offset inicial: {Offset}", updates.Count, lastId + 1);
+            _logger.LogInformation("Discarded {Count} old updates. Initial offset: {Offset}", updates.Count, lastId + 1);
             return lastId + 1;
         }
 
@@ -145,7 +145,7 @@ public class TelegramBotApiService : ITelegramBotApiService
     {
         var caption = $"🎮 *{Helpers.MarkdownSanitizer.Escape(jogo.NomeDoJogo)}*\n"
                     + $"🕹️ {jogo.Plataforma ?? "N/A"}\n"
-                    + $"💰 {jogo.PrecoAtual ?? "Preço indisponível"}";
+                    + $"💰 {jogo.PrecoAtual ?? "Price unavailable"}";
 
         if (!string.IsNullOrEmpty(jogo.ImagemUrl))
         {
@@ -156,7 +156,7 @@ public class TelegramBotApiService : ITelegramBotApiService
             }
             catch
             {
-                // Fallback para texto se a foto falhar
+                // Fallback to text if photo fails
             }
         }
 

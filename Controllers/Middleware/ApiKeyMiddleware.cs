@@ -24,7 +24,7 @@ public class ApiKeyMiddleware
         if (!context.Request.Headers.TryGetValue(APIKEYNAME, out var extractedApiKey))
         {
             context.Response.StatusCode = 401;
-            await context.Response.WriteAsJsonAsync(new { Mensagem = "Acesso negado. API Key não fornecida no Header." });
+            await context.Response.WriteAsJsonAsync(new { Message = "Access denied. API Key not provided in the Header." });
             return;
         }
 
@@ -34,7 +34,7 @@ public class ApiKeyMiddleware
         if (chatId is null)
         {
             context.Response.StatusCode = 401;
-            await context.Response.WriteAsJsonAsync(new { Mensagem = "Acesso negado. API Key inválida." });
+            await context.Response.WriteAsJsonAsync(new { Message = "Access denied. Invalid API Key." });
             return;
         }
 
