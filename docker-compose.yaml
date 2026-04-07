@@ -11,6 +11,7 @@ services:
       - ConnectionStrings__DefaultConnection=Data Source=/app/data/psntracker.db
       - Telegram__BotToken=${TELEGRAM_BOT_TOKEN}
       - Monitoramento__IntervaloMinutos=${MONITORAMENTO_INTERVALO:-60}
+      - EnableSwagger=true
 
 volumes:
   sqlite-data:

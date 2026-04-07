@@ -101,7 +101,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // 5. PIPELINE DE REQUISIÇÕES
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("EnableSwagger"))
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
