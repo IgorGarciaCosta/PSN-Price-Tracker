@@ -21,6 +21,10 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "PSN Price Tracker", Version = "v1" });
 
+    var xmlFile = Path.Combine(AppContext.BaseDirectory, "PsnPriceTracker.xml");
+    if (File.Exists(xmlFile))
+        c.IncludeXmlComments(xmlFile);
+
     c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
     {
         Description = "Insira a sua API Key no campo abaixo.",

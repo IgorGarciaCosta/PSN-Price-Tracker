@@ -6,6 +6,8 @@ namespace PsnPriceTracker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Tags("Alertas")]
+    [Produces("application/json")]
     public class AlertasController : ControllerBase
     {
         private readonly IMonitoramentoService _monitoramentoService;
@@ -17,31 +19,14 @@ namespace PsnPriceTracker.Controllers
             _psnService = psnService;
         }
 
-        [HttpGet("jogos-mock")]
-        public IActionResult ObterJogosMock()
-        {
-            var jogos = new List<PrecoPsnDTO>
-            {
-                new PrecoPsnDTO { NomeDoJogo = "God of War Ragnarök", PrecoAtual = 149.90m },
-                new PrecoPsnDTO { NomeDoJogo = "Spider-Man 2", PrecoAtual = 199.90m },
-                new PrecoPsnDTO { NomeDoJogo = "The Last of Us Part II", PrecoAtual = 99.90m }
-            };
-
-            return Ok(jogos);
-        }
-
-        [HttpPost("testar")]
-        public async Task<IActionResult> TestarAlerta([FromBody] AlertaRequestDTO request)
-        {
-            var chatId = (long)HttpContext.Items["TelegramChatId"]!;
-
-            //pass the hard work to the service layer
-            var resultado = await _monitoramentoService.ProcessarAlertaAsync(request, chatId);
-
-            return Ok(new { Mensagem = resultado });
-        }
-
+        /// <summary>
+        /// Busca jogos na PlayStation Store pelo nome.
+        /// </summary>
+        /// <param name="nome">Nome do jogo a ser buscado.</param>
         [HttpGet("buscar-jogo")]
+        [ProducesResponseType(typeof(List<BuscaResultadoDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> BuscarJogo([FromQuery] string nome)
         {
             if (string.IsNullOrWhiteSpace(nome))
