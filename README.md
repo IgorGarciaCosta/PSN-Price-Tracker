@@ -14,6 +14,38 @@ A web application built with ASP.NET Core (.NET 9) that monitors PlayStation Sto
 - SQLite database for persistent storage
 - Docker support for easy deployment
 
+## Screenshots
+
+### Swagger UI — API Overview
+
+The interactive API documentation powered by Swagger (OpenAPI 3.0), with versioned endpoints and built-in authorization support.
+
+![Swagger UI Overview](docs/swagger-overview.png)
+
+### API Schemas
+
+Auto-generated schema documentation for all request/response models, including `BuscaResultadoDTO` and standard `ProblemDetails` error responses.
+
+![Swagger Schemas](docs/swagger-schemas.png)
+
+### Endpoint Details — Parameters & Responses
+
+Fully documented endpoint with query parameters, response codes (200, 400, 404), and example payloads — ready to test directly from the browser.
+
+![Swagger Endpoint Details](docs/swagger-endpoint.png)
+
+### API Key Authentication
+
+Secure API access via `X-Api-Key` header. Keys are generated through the Telegram bot (`/apikey` command) and validated by custom middleware.
+
+![Swagger Authorization](docs/swagger-auth.png)
+
+### Live API Response
+
+Real response from the running API — searching for "God of War" returns multiple results with game name, platform, price, store URL, and cover image.
+
+![Swagger Live Response](docs/swagger-response.png)
+
 ## Prerequisites
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
