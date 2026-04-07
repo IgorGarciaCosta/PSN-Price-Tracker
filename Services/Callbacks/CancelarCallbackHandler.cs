@@ -8,7 +8,7 @@ public class CancelarCallbackHandler : ITelegramCallbackHandler
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ITelegramBotApiService _botApi;
 
-    public string Prefix => "cancelar:";
+    public string Prefix => "cancel:";
 
     public CancelarCallbackHandler(IServiceScopeFactory scopeFactory, ITelegramBotApiService botApi)
     {

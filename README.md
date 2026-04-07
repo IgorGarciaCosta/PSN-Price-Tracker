@@ -90,14 +90,14 @@ When deploying to Oracle Cloud, make sure to:
 | Command          | Description                                                              |
 | ---------------- | ------------------------------------------------------------------------ |
 | `/start`         | Welcome message with available commands                                  |
-| `/buscar <nome>` | Search PSN Store for games (returns up to 5 results with inline buttons) |
-| `/meusalertas`   | List all your active price alerts                                        |
-| `/cancelar`      | Deactivate an existing alert (shows cancel buttons)                      |
-| `/gerarkey`      | Generate an API Key for REST API access                                  |
+| `/search <name>` | Search PSN Store for games (returns up to 5 results with inline buttons) |
+| `/myalerts`      | List all your active price alerts                                        |
+| `/cancel`        | Deactivate an existing alert (shows cancel buttons)                      |
+| `/apikey`        | Generate an API Key for REST API access                                  |
 
 ### Alert Flow
 
-1. Send `/buscar God of War` to the bot
+1. Send `/search God of War` to the bot
 2. Bot returns game cards with images and "Escolher este ✅" buttons
 3. Select a game — bot asks for your target price
 4. Reply with the price (e.g. `150`, `150.00`, or `R$ 150,00`)
@@ -106,7 +106,7 @@ When deploying to Oracle Cloud, make sure to:
 
 ## REST API Endpoints
 
-All endpoints require the `X-Api-Key` header (except Swagger docs). Generate a key via the `/gerarkey` Telegram command.
+All endpoints require the `X-Api-Key` header (except Swagger docs). Generate a key via the `/apikey` Telegram command.
 
 | Method | Route                               | Description                   |
 | ------ | ----------------------------------- | ----------------------------- |
@@ -186,10 +186,10 @@ X-Api-Key: your-api-key-here
 │   │   ├── BuscarCallbackHandler.cs    # Game selection callback
 │   │   └── CancelarCallbackHandler.cs  # Alert cancel callback
 │   ├── Commands/
-│   │   ├── BuscarCommandHandler.cs     # /buscar command
-│   │   ├── CancelarCommandHandler.cs   # /cancelar command
-│   │   ├── GerarKeyCommandHandler.cs   # /gerarkey command
-│   │   ├── MeusAlertasCommandHandler.cs# /meusalertas command
+│   │   ├── BuscarCommandHandler.cs     # /search command
+│   │   ├── CancelarCommandHandler.cs   # /cancel command
+│   │   ├── GerarKeyCommandHandler.cs   # /apikey command
+│   │   ├── MeusAlertasCommandHandler.cs# /myalerts command
 │   │   ├── StartCommandHandler.cs      # /start command
 │   │   └── TextoLivreHandler.cs        # Free text (price input)
 │   ├── AlertaMonitorBackgroundService.cs # Scheduled price monitoring
@@ -212,7 +212,7 @@ X-Api-Key: your-api-key-here
 The project follows a layered architecture with dependency injection and the Command Pattern for Telegram bot handling:
 
 1. **Controllers** — HTTP entry points, protected by API Key middleware and rate limiting
-2. **Services/Commands** — Each Telegram command (`/buscar`, `/cancelar`, etc.) is an `ITelegramCommand` implementation, dispatched by `TelegramCommandHandler`
+2. **Services/Commands** — Each Telegram command (`/search`, `/cancel`, etc.) is an `ITelegramCommand` implementation, dispatched by `TelegramCommandHandler`
 3. **Services/Callbacks** — Inline button handlers implementing `ITelegramCallbackHandler`
 4. **Services** — Business logic (alert CRUD, price monitoring, session management)
 5. **Integrations** — External communication (PSN web scraping)

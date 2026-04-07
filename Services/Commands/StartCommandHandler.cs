@@ -18,11 +18,11 @@ public class StartCommandHandler : ITelegramCommand
         var mensagem = "👋 *Welcome to PSN Price Tracker!*\n\n"
                      + "I'm the bot that monitors PSN game prices.\n\n"
                      + "📋 *Available commands:*\n"
-                     + "/buscar `(game name)` — Search games on PSN\n"
-                     + "/meusalertas — List your active alerts\n"
-                     + "/cancelar — Cancel an active alert\n"
-                     + "/gerarkey — Generate your API Key\n\n"
-                     + "🎮 Try it: /buscar God of War";
+                     + "/search `(game name)` — Search games on PSN\n"
+                     + "/myalerts — List your active alerts\n"
+                     + "/cancel — Cancel an active alert\n"
+                     + "/apikey — Generate your API Key\n\n"
+                     + "🎮 Try it: /search God of War";
 
         await _botApi.SendMessageAsync(botToken, chatId, mensagem, ct);
     }

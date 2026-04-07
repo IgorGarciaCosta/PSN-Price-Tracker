@@ -8,7 +8,7 @@ public class MeusAlertasCommandHandler : ITelegramCommand
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ITelegramBotApiService _botApi;
 
-    public string Command => "/meusalertas";
+    public string Command => "/myalerts";
 
     public MeusAlertasCommandHandler(IServiceScopeFactory scopeFactory, ITelegramBotApiService botApi)
     {
@@ -37,7 +37,7 @@ public class MeusAlertasCommandHandler : ITelegramCommand
                  + $"   📅 Created on: {a.CriadoEm:MM/dd/yyyy}\n\n";
         }
 
-        msg += "Use /cancelar to remove an alert.";
+        msg += "Use /cancel to remove an alert.";
         await _botApi.SendMessageAsync(botToken, chatId, msg, ct);
     }
 }

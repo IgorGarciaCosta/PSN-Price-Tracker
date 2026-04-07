@@ -9,7 +9,7 @@ public class BuscarCallbackHandler : ITelegramCallbackHandler
     private readonly ITelegramBotApiService _botApi;
     private readonly TelegramSessionManager _session;
 
-    public string Prefix => "buscar:";
+    public string Prefix => "search:";
 
     public BuscarCallbackHandler(ITelegramBotApiService botApi, TelegramSessionManager session)
     {
@@ -27,7 +27,7 @@ public class BuscarCallbackHandler : ITelegramCallbackHandler
         var resultados = _session.TryRemoveSearchResults(chatId);
         if (resultados is null || index < 0 || index >= resultados.Count)
         {
-            await _botApi.SendMessageAsync(botToken, chatId, "⚠️ Result expired. Use /buscar again.", ct);
+            await _botApi.SendMessageAsync(botToken, chatId, "⚠️ Result expired. Use /search again.", ct);
             return;
         }
 

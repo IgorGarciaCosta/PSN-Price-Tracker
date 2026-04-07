@@ -9,7 +9,7 @@ public class CancelarCommandHandler : ITelegramCommand
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ITelegramBotApiService _botApi;
 
-    public string Command => "/cancelar";
+    public string Command => "/cancel";
 
     public CancelarCommandHandler(IServiceScopeFactory scopeFactory, ITelegramBotApiService botApi)
     {
@@ -33,7 +33,7 @@ public class CancelarCommandHandler : ITelegramCommand
         {
             var a = alertas[i];
             var keyboard = new InlineKeyboardMarkup(
-                new InlineKeyboardButton { Text = "❌ Cancelar", CallbackData = $"cancelar:{a.Id}" });
+                new InlineKeyboardButton { Text = "❌ Cancel", CallbackData = $"cancel:{a.Id}" });
 
             var msg = $"🎮 *{MarkdownSanitizer.Escape(a.NomeDoJogo)}*\n🎯 Target: R$ {a.PrecoAlvo}";
             await _botApi.SendMessageWithKeyboardAsync(botToken, chatId, msg, keyboard, ct);

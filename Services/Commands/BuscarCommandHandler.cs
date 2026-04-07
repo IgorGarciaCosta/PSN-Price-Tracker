@@ -10,7 +10,7 @@ public class BuscarCommandHandler : ITelegramCommand
     private readonly ITelegramBotApiService _botApi;
     private readonly TelegramSessionManager _session;
 
-    public string Command => "/buscar";
+    public string Command => "/search";
 
     public BuscarCommandHandler(IServiceScopeFactory scopeFactory, ITelegramBotApiService botApi, TelegramSessionManager session)
     {
@@ -21,13 +21,13 @@ public class BuscarCommandHandler : ITelegramCommand
 
     public async Task ExecuteAsync(string botToken, long chatId, string messageText, CancellationToken ct)
     {
-        var nomeDoJogo = messageText.Length > "/buscar ".Length
-            ? messageText["/buscar ".Length..].Trim()
+        var nomeDoJogo = messageText.Length > "/search ".Length
+            ? messageText["/search ".Length..].Trim()
             : string.Empty;
 
         if (string.IsNullOrWhiteSpace(nomeDoJogo))
         {
-            await _botApi.SendMessageAsync(botToken, chatId, "❓ Usage: /buscar `game name`\n\nExample: /buscar The Last of Us", ct);
+            await _botApi.SendMessageAsync(botToken, chatId, "❓ Usage: /search `game name`\n\nExample: /search The Last of Us", ct);
             return;
         }
 
@@ -60,7 +60,7 @@ public class BuscarCommandHandler : ITelegramCommand
         for (int i = 0; i < resultados.Count; i++)
         {
             var keyboard = new InlineKeyboardMarkup(
-                new InlineKeyboardButton { Text = "Select this ✅", CallbackData = $"buscar:{i}" });
+                new InlineKeyboardButton { Text = "Select this ✅", CallbackData = $"search:{i}" });
 
             await _botApi.SendGameCardAsync(botToken, chatId, resultados[i], keyboard, ct);
         }

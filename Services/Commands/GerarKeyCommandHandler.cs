@@ -8,7 +8,7 @@ public class GerarKeyCommandHandler : ITelegramCommand
     private readonly ITelegramBotApiService _botApi;
     private readonly ILogger<GerarKeyCommandHandler> _logger;
 
-    public string Command => "/gerarkey";
+    public string Command => "/apikey";
 
     public GerarKeyCommandHandler(IServiceScopeFactory scopeFactory, ITelegramBotApiService botApi, ILogger<GerarKeyCommandHandler> logger)
     {

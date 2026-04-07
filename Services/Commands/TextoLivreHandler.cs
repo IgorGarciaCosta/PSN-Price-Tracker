@@ -65,7 +65,7 @@ public class TextoLivreHandler
                         + $"💰 *Current Price:* R$ {dadosPsn.PrecoAtual}\n"
                         + $"🎯 *Your Target:* R$ {precoAlvo}\n\n"
                         + $"🔔 You will be notified when the price reaches your target.\n"
-                        + $"Use /meusalertas to see your active alerts.";
+                        + $"Use /myalerts to see your active alerts.";
 
                 await _botApi.SendMessageAsync(botToken, chatId, msg, ct);
             }
