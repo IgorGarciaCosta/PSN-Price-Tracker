@@ -24,20 +24,20 @@ public class MeusAlertasCommandHandler : ITelegramCommand
 
         if (alertas.Count == 0)
         {
-            await _botApi.SendMessageAsync(botToken, chatId, "📭 Você não tem alertas ativos no momento.", ct);
+            await _botApi.SendMessageAsync(botToken, chatId, "📭 You have no active alerts at the moment.", ct);
             return;
         }
 
-        var msg = "📋 *Seus alertas ativos:*\n\n";
+        var msg = "📋 *Your active alerts:*\n\n";
         for (int i = 0; i < alertas.Count; i++)
         {
             var a = alertas[i];
             msg += $"{i + 1}. 🎮 *{MarkdownSanitizer.Escape(a.NomeDoJogo)}*\n"
-                 + $"   🎯 Alvo: R$ {a.PrecoAlvo}\n"
-                 + $"   📅 Criado em: {a.CriadoEm:dd/MM/yyyy}\n\n";
+                 + $"   🎯 Target: R$ {a.PrecoAlvo}\n"
+                 + $"   📅 Created on: {a.CriadoEm:MM/dd/yyyy}\n\n";
         }
 
-        msg += "Use /cancelar para remover um alerta.";
+        msg += "Use /cancelar to remove an alert.";
         await _botApi.SendMessageAsync(botToken, chatId, msg, ct);
     }
 }

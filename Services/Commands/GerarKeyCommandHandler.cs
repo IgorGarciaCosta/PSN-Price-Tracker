@@ -25,20 +25,20 @@ public class GerarKeyCommandHandler : ITelegramCommand
 
         if (string.IsNullOrEmpty(chave))
         {
-            var aviso = "⚠️ Você já possui uma API Key gerada.\n\n"
-                + "Por segurança, a chave só é exibida no momento da criação.\n"
-                + "Caso tenha perdido, entre em contato para regenerar.";
+            var aviso = "⚠️ You already have a generated API Key.\n\n"
+                + "For security, the key is only displayed at creation time.\n"
+                + "If you lost it, please contact us to regenerate.";
             await _botApi.SendMessageAsync(botToken, chatId, aviso, ct);
             return;
         }
 
-        var mensagem = "🔑 *Sua API Key foi gerada com sucesso!*\n\n"
+        var mensagem = "🔑 *Your API Key was generated successfully!*\n\n"
              + $"`{chave}`\n\n"
-             + "📋 *Como usar:*\n"
-             + "Adicione o seguinte Header em todas as requisições:\n\n"
+             + "📋 *How to use:*\n"
+             + "Add the following Header to all requests:\n\n"
              + "*Header:* `X-Api-Key`\n"
-             + $"*Valor:* `{chave}`\n\n"
-             + "🔒 Guarde esta chave com segurança. Ela é única e intransferível.";
+             + $"*Value:* `{chave}`\n\n"
+             + "🔒 Keep this key safe. It is unique and non-transferable.";
 
         await _botApi.SendMessageAsync(botToken, chatId, mensagem, ct);
 

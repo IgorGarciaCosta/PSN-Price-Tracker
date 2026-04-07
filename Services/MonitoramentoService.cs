@@ -24,16 +24,16 @@ namespace PsnPriceTracker.Services
             if (dadosPsn.PrecoAtual <= request.PrecoAlvo)
             {
                 //formats the message and sends it to the Telegram service
-                string mensagem = $"🚨 *ALERTA DE PREÇO PSN!*\n\n" +
-                                $"🎮 *Jogo:* {MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n" +
-                                $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n" +
-                                $"🎯 *Seu Alvo:* R$ {request.PrecoAlvo}\n\n" +
-                                $"🛒 [Clique aqui para comprar]({request.UrlDoJogo})"; await _telegramService.SendMessageAsync(chatId, mensagem);
+                string mensagem = $"🚨 *PSN PRICE ALERT!*\n\n" +
+                                $"🎮 *Game:* {MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n" +
+                                $"💰 *Current Price:* R$ {dadosPsn.PrecoAtual}\n" +
+                                $"🎯 *Your Target:* R$ {request.PrecoAlvo}\n\n" +
+                                $"🛒 [Click here to buy]({request.UrlDoJogo})"; await _telegramService.SendMessageAsync(chatId, mensagem);
 
-                return "Preço atingido! Notificação enviada.";
+                return "Target price reached! Notification sent.";
             }
 
-            return $"O preço atual (R$ {dadosPsn.PrecoAtual}) ainda está acima do seu alvo.";
+            return $"The current price (R$ {dadosPsn.PrecoAtual}) is still above your target.";
         }
     }
 }

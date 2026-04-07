@@ -27,13 +27,13 @@ public class BuscarCommandHandler : ITelegramCommand
 
         if (string.IsNullOrWhiteSpace(nomeDoJogo))
         {
-            await _botApi.SendMessageAsync(botToken, chatId, "❓ Use: /buscar `nome do jogo`\n\nExemplo: /buscar The Last of Us", ct);
+            await _botApi.SendMessageAsync(botToken, chatId, "❓ Usage: /buscar `game name`\n\nExample: /buscar The Last of Us", ct);
             return;
         }
 
         _session.ClearSession(chatId);
 
-        await _botApi.SendMessageAsync(botToken, chatId, $"🔍 Buscando *{MarkdownSanitizer.Escape(nomeDoJogo)}* na PSN...", ct);
+        await _botApi.SendMessageAsync(botToken, chatId, $"🔍 Searching for *{MarkdownSanitizer.Escape(nomeDoJogo)}* on PSN...", ct);
 
         using var scope = _scopeFactory.CreateScope();
         var psnService = scope.ServiceProvider.GetRequiredService<IPsnIntegrationService>();
@@ -41,7 +41,7 @@ public class BuscarCommandHandler : ITelegramCommand
 
         if (resultados.Count == 0)
         {
-            await _botApi.SendMessageAsync(botToken, chatId, $"😕 Nenhum jogo encontrado para *{MarkdownSanitizer.Escape(nomeDoJogo)}*.", ct);
+            await _botApi.SendMessageAsync(botToken, chatId, $"😕 No games found for *{MarkdownSanitizer.Escape(nomeDoJogo)}*.", ct);
             return;
         }
 
@@ -51,7 +51,7 @@ public class BuscarCommandHandler : ITelegramCommand
             _session.SetPendingAlert(chatId, jogo.UrlDoJogo, jogo.NomeDoJogo);
 
             await _botApi.SendGameCardAsync(botToken, chatId, jogo, inlineKeyboard: null, ct);
-            await _botApi.SendMessageAsync(botToken, chatId, "💰 Qual o seu *preço-alvo*? (ex: 150.00)", ct);
+            await _botApi.SendMessageAsync(botToken, chatId, "💰 What is your *target price*? (e.g. 150.00)", ct);
             return;
         }
 
@@ -60,7 +60,7 @@ public class BuscarCommandHandler : ITelegramCommand
         for (int i = 0; i < resultados.Count; i++)
         {
             var keyboard = new InlineKeyboardMarkup(
-                new InlineKeyboardButton { Text = "Escolher este ✅", CallbackData = $"buscar:{i}" });
+                new InlineKeyboardButton { Text = "Select this ✅", CallbackData = $"buscar:{i}" });
 
             await _botApi.SendGameCardAsync(botToken, chatId, resultados[i], keyboard, ct);
         }

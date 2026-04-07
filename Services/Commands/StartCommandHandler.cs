@@ -15,14 +15,14 @@ public class StartCommandHandler : ITelegramCommand
 
     public async Task ExecuteAsync(string botToken, long chatId, string messageText, CancellationToken ct)
     {
-        var mensagem = "👋 *Bem-vindo ao PSN Price Tracker!*\n\n"
-                     + "Eu sou o bot que monitora preços de jogos na PSN.\n\n"
-                     + "📋 *Comandos disponíveis:*\n"
-                     + "/buscar `(nome do jogo)` — Busca jogos na PSN\n"
-                     + "/meusalertas — Lista seus alertas ativos\n"
-                     + "/cancelar — Cancela um alerta ativo\n"
-                     + "/gerarkey — Gera sua API Key\n\n"
-                     + "🎮 Experimente: /buscar God of War";
+        var mensagem = "👋 *Welcome to PSN Price Tracker!*\n\n"
+                     + "I'm the bot that monitors PSN game prices.\n\n"
+                     + "📋 *Available commands:*\n"
+                     + "/buscar `(game name)` — Search games on PSN\n"
+                     + "/meusalertas — List your active alerts\n"
+                     + "/cancelar — Cancel an active alert\n"
+                     + "/gerarkey — Generate your API Key\n\n"
+                     + "🎮 Try it: /buscar God of War";
 
         await _botApi.SendMessageAsync(botToken, chatId, mensagem, ct);
     }

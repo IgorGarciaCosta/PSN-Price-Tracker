@@ -177,7 +177,7 @@ namespace PsnPriceTracker.Integrations
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Fallback: falha ao buscar preço via Container API para {ProductId}", productId);
+                _logger.LogWarning(ex, "Fallback: failed to fetch price via Container API for {ProductId}", productId);
                 return null;
             }
         }
@@ -205,13 +205,13 @@ namespace PsnPriceTracker.Integrations
         private static void ValidateUrl(string url)
         {
             if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
-                throw new ArgumentException("URL inválida.");
+                throw new ArgumentException("Invalid URL.");
 
             if (!string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
-                throw new ArgumentException("Apenas URLs HTTPS são permitidas.");
+                throw new ArgumentException("Only HTTPS URLs are allowed.");
 
             if (!AllowedHosts.Contains(uri.Host))
-                throw new ArgumentException($"Domínio não permitido: {uri.Host}. Apenas store.playstation.com é aceito.");
+                throw new ArgumentException($"Domain not allowed: {uri.Host}. Only store.playstation.com is accepted.");
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace PsnPriceTracker.Integrations
                 ?? htmlDoc.DocumentNode.SelectSingleNode("//h1");
 
             if (nameNode == null)
-                throw new ApplicationException("Não foi possível encontrar os dados do jogo na página. Verifique a URL e tente novamente.");
+                throw new ApplicationException("Could not find game data on the page. Check the URL and try again.");
 
             return nameNode.InnerText.Trim();
         }
@@ -259,7 +259,7 @@ namespace PsnPriceTracker.Integrations
             if (originalNode != null && TryParsePrice(originalNode.InnerText, out decimal originalPrice))
                 return originalPrice;
 
-            throw new ApplicationException("Não foi possível encontrar um preço numérico na página. O jogo pode estar disponível apenas via PS Plus.");
+            throw new ApplicationException("Could not find a numeric price on the page. The game may only be available via PS Plus.");
         }
 
         /// <summary>

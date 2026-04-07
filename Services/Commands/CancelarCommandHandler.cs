@@ -25,7 +25,7 @@ public class CancelarCommandHandler : ITelegramCommand
 
         if (alertas.Count == 0)
         {
-            await _botApi.SendMessageAsync(botToken, chatId, "📭 Você não tem alertas ativos para cancelar.", ct);
+            await _botApi.SendMessageAsync(botToken, chatId, "📭 You have no active alerts to cancel.", ct);
             return;
         }
 
@@ -35,7 +35,7 @@ public class CancelarCommandHandler : ITelegramCommand
             var keyboard = new InlineKeyboardMarkup(
                 new InlineKeyboardButton { Text = "❌ Cancelar", CallbackData = $"cancelar:{a.Id}" });
 
-            var msg = $"🎮 *{MarkdownSanitizer.Escape(a.NomeDoJogo)}*\n🎯 Alvo: R$ {a.PrecoAlvo}";
+            var msg = $"🎮 *{MarkdownSanitizer.Escape(a.NomeDoJogo)}*\n🎯 Target: R$ {a.PrecoAlvo}";
             await _botApi.SendMessageWithKeyboardAsync(botToken, chatId, msg, keyboard, ct);
         }
     }

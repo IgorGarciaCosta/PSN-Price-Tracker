@@ -21,7 +21,7 @@ public class AlertaMonitorBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("AlertaMonitor iniciado. Aguardando primeiro ciclo...");
+        _logger.LogInformation("AlertaMonitor started. Waiting for first cycle...");
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -34,7 +34,7 @@ public class AlertaMonitorBackgroundService : BackgroundService
 
     private async Task VerificarAlertasAsync(CancellationToken ct)
     {
-        _logger.LogInformation("Iniciando ciclo de verificação de alertas...");
+        _logger.LogInformation("Starting alert verification cycle...");
 
         using var scope = _scopeFactory.CreateScope();
         var alertaService = scope.ServiceProvider.GetRequiredService<IAlertaService>();
@@ -45,12 +45,12 @@ public class AlertaMonitorBackgroundService : BackgroundService
 
         if (alertas.Count == 0)
         {
-            _logger.LogInformation("Nenhum alerta ativo encontrado.");
+            _logger.LogInformation("No active alerts found.");
             return;
         }
 
         var alertasPorUrl = alertas.GroupBy(a => a.UrlDoJogo);
-        _logger.LogInformation("Verificando {Count} alerta(s) ativo(s) para {UrlCount} jogo(s) único(s)...",
+        _logger.LogInformation("Checking {Count} active alert(s) for {UrlCount} unique game(s)...",
             alertas.Count, alertasPorUrl.Count());
 
         foreach (var grupo in alertasPorUrl)
@@ -69,14 +69,14 @@ public class AlertaMonitorBackgroundService : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao buscar preço para URL {Url}", grupo.Key);
+                _logger.LogError(ex, "Error fetching price for URL {Url}", grupo.Key);
             }
 
             // Rate limiting: 2s entre consultas à PSN (por URL única)
             await Task.Delay(TimeSpan.FromSeconds(2), ct);
         }
 
-        _logger.LogInformation("Ciclo de verificação concluído.");
+        _logger.LogInformation("Verification cycle completed.");
     }
 
     private async Task ProcessarAlertaAsync(
@@ -89,11 +89,11 @@ public class AlertaMonitorBackgroundService : BackgroundService
         {
             if (dadosPsn.PrecoAtual <= alerta.PrecoAlvo)
             {
-                var mensagem = $"🚨 *ALERTA DE PREÇO PSN!*\n\n"
-                             + $"🎮 *Jogo:* {Helpers.MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
-                             + $"💰 *Preço Atual:* R$ {dadosPsn.PrecoAtual}\n"
-                             + $"🎯 *Seu Alvo:* R$ {alerta.PrecoAlvo}\n\n"
-                             + $"🛒 [Comprar na PSN]({alerta.UrlDoJogo})";
+                var mensagem = $"🚨 *PSN PRICE ALERT!*\n\n"
+                             + $"🎮 *Game:* {Helpers.MarkdownSanitizer.Escape(dadosPsn.NomeDoJogo)}\n"
+                             + $"💰 *Current Price:* R$ {dadosPsn.PrecoAtual}\n"
+                             + $"🎯 *Your Target:* R$ {alerta.PrecoAlvo}\n\n"
+                             + $"🛒 [Buy on PSN]({alerta.UrlDoJogo})";
 
                 await telegramService.SendMessageAsync(alerta.TelegramChatId, mensagem);
                 await alertaService.MarcarComoNotificadoAsync(alerta.Id);
